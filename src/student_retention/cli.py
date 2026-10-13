@@ -13,11 +13,13 @@ from student_retention.paths import (
     FIGURES_DIR,
     INTERIM_NORMALIZED_DIR,
     PROCESSED_COHORT_DIR,
+    PROCESSED_FEATURES_DIR,
     QUALITY_REPORTS_DIR,
     REPORTS_DIR,
     TABLES_DIR,
 )
 from student_retention.transformation.build_cohort import CohortBuilder
+from student_retention.transformation.build_feature_table import FeatureTableBuilder
 from student_retention.validation.report_generator import generate_quality_report
 
 logger = get_logger("student_retention.cli")
@@ -103,6 +105,25 @@ def run_eda(args: argparse.Namespace) -> int:
     print(f"  - Tables exported to:      {results['tables_dir']}")
     print(f"  - Figures exported to:     {results['figures_dir']}")
     print(f"  - Report generated:        {results['report_path']}")
+    return 0
+
+
+def run_build_features(args: argparse.Namespace) -> int:
+    """Execute temporal feature engineering pipeline."""
+    logger.info("Executing temporal feature engineering pipeline (cutoff: Day %d, policy: %s)", args.cutoff, args.policy)
+    builder = FeatureTableBuilder(cutoff_day=args.cutoff)
+    feature_df, report = builder.run_pipeline(
+        cohort_path=args.cohort_path,
+        interim_dir=args.interim_dir,
+        output_dir=args.output_dir,
+        report_dir=args.report_dir,
+        policy_version=args.policy,
+    )
+    print("\nTemporal Feature Engineering Completed Successfully!")
+    print(f"  - Eligible observations:   {len(feature_df):,}")
+    print(f"  - Features extracted:      {len(feature_df.columns):,}")
+    print(f"  - Validation status:       {report['metrics']['validation_status']}")
+    print(f"  - Output directory:        {args.output_dir}")
     return 0
 
 
@@ -224,6 +245,48 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory to save reports (default: outputs/reports)",
     )
 
+    # Subcommand: build-features
+    feat_parser = subparsers.add_parser(
+        "build-features",
+        help="Build Day 35 temporal feature matrices and validation reports.",
+    )
+    feat_parser.add_argument(
+        "--cutoff",
+        type=int,
+        default=35,
+        help="Cutoff relative day for temporal feature snapshot (default: 35)",
+    )
+    feat_parser.add_argument(
+        "--policy",
+        choices=["Policy C", "Policy B"],
+        default="Policy C",
+        help="Cohort policy version to construct features for (default: Policy C)",
+    )
+    feat_parser.add_argument(
+        "--cohort-path",
+        type=Path,
+        default=None,
+        help="Path to cohort dataset (default: data/processed/cohort/cohort_policy_c.parquet)",
+    )
+    feat_parser.add_argument(
+        "--interim-dir",
+        type=Path,
+        default=INTERIM_NORMALIZED_DIR,
+        help="Directory containing normalized interim tables (default: data/interim/normalized)",
+    )
+    feat_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=PROCESSED_FEATURES_DIR,
+        help="Directory to save feature matrices (default: data/processed/features)",
+    )
+    feat_parser.add_argument(
+        "--report-dir",
+        type=Path,
+        default=None,
+        help="Directory to save quality report (default: outputs/quality_reports or output-dir if custom)",
+    )
+
     return parser
 
 
@@ -240,6 +303,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_build_cohort(args)
     elif args.command == "run-eda":
         return run_eda(args)
+    elif args.command == "build-features":
+        return run_build_features(args)
     else:
         parser.print_help()
         return 0

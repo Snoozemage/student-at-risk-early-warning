@@ -1,0 +1,40 @@
+{
+  "is_valid": true,
+  "errors": [],
+  "warnings": [],
+  "metrics": {
+    "row_count": 27128,
+    "column_count": 31,
+    "policy_version": "Policy C",
+    "duplicate_grain_count": 0,
+    "missing_allowlist_features": [],
+    "null_counts": {
+      "code_module": 0,
+      "presentation_season": 0,
+      "studied_credits": 0,
+      "num_of_prev_attempts": 0,
+      "registration_lead_time_days": 0,
+      "is_late_registration": 0,
+      "vle_total_clicks_window": 0,
+      "vle_active_days_window": 0,
+      "vle_unique_sites_accessed": 0,
+      "vle_pre_course_clicks": 0,
+      "vle_recent_clicks_14d": 0,
+      "vle_velocity_ratio": 0,
+      "days_since_last_vle_interaction": 0,
+      "has_no_vle_activity_by_cutoff": 0,
+      "vle_clicks_forumng": 0,
+      "vle_clicks_oucontent": 0,
+      "vle_clicks_quiz": 0,
+      "assessments_due_count": 0,
+      "submissions_count_lte_cutoff": 0,
+      "submitted_on_time_count": 0,
+      "late_submissions_count_lte_cutoff": 0,
+      "missing_due_submissions_count": 0
+    },
+    "target_positive_base_rate": 0.17391624889413151,
+    "validation_status": "PASSED",
+    "error_count": 0,
+    "warning_count": 0
+  }
+}
