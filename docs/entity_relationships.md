@@ -1,9 +1,9 @@
 # Entity Relationships & Join Integrity Specification
 
 **Project:** Smart Student Retention & Early Warning System
-**Phase:** Phase 0 — OULAD Workspace and Source Audit
-**Date:** 2026-10-13 (Updated post-audit verification)
-**Status:** Empirically Verified against Source Tables
+**Phase:** Phase 1 — Business Specification and Data Contract
+**Date:** 2026-10-13 (Updated Phase 1 formalization)
+**Status:** Proposed Specification (Pending Review)
 
 ---
 
@@ -129,14 +129,14 @@ OULAD courses run across two distinct presentation cycles:
    * Durations: 261 to 269 days (median: 268 days).
    * Standard British academic Autumn start.
 
-### Status of the Day-35 Prediction Cutoff:
-* **Initial Design Hypothesis:** Day 35 relative to presentation start was formulated in the project plan (`PROJECT_PLAN.md`) as the primary candidate early-warning window (approximately week 5).
-* **Relative Calendar Placement:** Day 35 represents $\approx 14.5\%$ of a `B` presentation and $\approx 13.0\%$ of a `J` presentation. This establishes comparable relative calendar positioning across cohorts.
-* **Operational Feasibility Considerations:** Relative calendar percentage alone does **not** prove operational or predictive soundness. Formal justification requires evaluating:
-  1. *Early Exit Exclusion:* 5,349 students unregistered $\le$ Day 35 (5,341 Withdrawn + 8 Fail $\le 0$). They departed before early warnings could be operationalized.
-  2. *Actionable Target Volume:* 4,812 eventual withdrawals occur after Day 35, providing an adequate target population.
-  3. *Information Availability:* 3,253,906 VLE interaction records occur on or before Day 35; however, graded assessment availability at Day 35 is unverified.
-* **Phase 1 Mandate:** Day 35 remains an initial working hypothesis until verified against alternative cutoffs (e.g. Day 28 or Day 42) and formally specified in `config/feature_windows.yaml`.
+### Formalization of the Day-35 Prediction Cutoff:
+* **Relative Calendar Placement:** Day 35 represents $\approx 14.5\%$ of a `B` presentation (234–241 days) and $\approx 13.0\%$ of a `J` presentation (261–269 days), establishing comparable relative calendar positioning across cohorts.
+* **Formal Configuration in Phase 1:** The Day 35 prediction cutoff is now formally configured across `config/project.yaml` and `config/feature_windows.yaml`.
+* **Reconciliation of Withdrawal Figures (Raw vs. Policy C/B):**
+  1. *Phase 0 Un-Cleaned Raw Baseline:* The initial exploratory audit reported 4,812 post-cutoff withdrawals within 27,229 records. This raw figure resulted from subtracting 5,349 pre-cutoff unregistrations and 15 late registrations from the 32,593 total source records, but retained 93 Withdrawn records whose unregistration dates were unrecorded (`?`).
+  2. *Primary Policy C Cohort (Formal Clean-Data):* Formally excludes the 93 Withdrawn records with missing unregistration dates, 7 records with missing registration dates, and 1 contradictory record (`BBB_2013J_554243`), yielding **27,128 eligible records** and **4,718 verified eventual withdrawals** (17.3916% base rate).
+  3. *Sensitivity Policy B Cohort:* Retains the 7 records with missing registration dates and the contradictory record, yielding **27,136 eligible records** and **4,719 eventual withdrawals** (17.3902% base rate).
+* **Information Availability at Day 35:** 3,253,906 VLE interaction records occur on or before Day 35. Assessment submission timeliness is available, while graded assessment scores are excluded to prevent temporal leakage.
 
 ---
 

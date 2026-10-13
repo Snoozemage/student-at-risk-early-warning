@@ -1,0 +1,77 @@
+# Evaluation Protocol Configuration Contract
+splitting:
+  primary_unseen_student_evaluation:
+    strategy: "GroupShuffleSplit"
+    group_variable: "id_student"
+    test_size: 0.20
+    random_state: 42
+    rationale: "Evaluates model generalization to completely unseen learners; prevents data leakage from repeat student enrollments."
+    invariants:
+      enforce_zero_group_overlap: true
+      max_allowed_group_overlap_count: 0
+      min_test_positive_count: 500
+
+cross_validation:
+  strategy: "GroupKFold"
+  n_splits: 5
+  group_variable: "id_student"
+  invariants:
+    enforce_zero_group_overlap_across_folds: true
+
+temporal_validation:
+  description: "Chronological out-of-time evaluation across academic calendar years."
+  train_presentations:
+    - "2013B"
+    - "2013J"
+  test_presentations:
+    - "2014B"
+    - "2014J"
+  split_designs:
+    natural_operational:
+      description: "Realistic forward-chaining deployment where returning students take subsequent courses."
+      expected_student_overlap_count: 1309  # Policy C empirical overlap (9.16% of 2014 test cohort)
+      enforce_zero_overlap: false
+    disjoint_purged:
+      description: "Evaluates joint temporal and learner shift by purging returning students from test set."
+      enforce_zero_overlap: true
+      purged_students_action: "exclude_from_test_evaluation"
+
+metrics:
+  primary:
+    name: "PR-AUC"
+    description: "Area under Precision-Recall curve (Average Precision). Primary metric due to ~17.4% positive class imbalance."
+    provisional_target: ">= 0.40"
+    provisional_status: "Provisional target subject to baseline validation"
+  secondary:
+    - name: "ROC-AUC"
+      description: "Area under Receiver Operating Characteristic curve."
+    - name: "F1-score"
+      description: "Harmonic mean of precision and recall at operational threshold."
+    - name: "Precision"
+      description: "Fraction of flagged students who actually withdraw."
+    - name: "Recall"
+      description: "Fraction of actual withdrawing students captured by alerts."
+    - name: "Brier-Score"
+      description: "Mean squared difference between predicted probabilities and actual binary outcomes."
+  decision_support:
+    top_k_evaluations:
+      - 100
+      - 250
+      - 500
+      - 1000
+    top_pct_evaluations:
+      - 0.05
+      - 0.10
+      - 0.15
+      - 0.20
+    provisional_target_precision_at_500: ">= 0.50"
+    metrics:
+      - "Precision@K"
+      - "Recall@K"
+      - "CumulativeGain@K"
+
+threshold_selection:
+  policy: "optimize_f1_on_validation"
+  constraint: "precision >= 0.35"
+  provisional_status: "Provisional planning rule pending advisor feedback"
+  never_tune_on_test: true

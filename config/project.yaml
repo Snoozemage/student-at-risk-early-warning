@@ -1,0 +1,21 @@
+# Project Configuration Contract
+project:
+  name: "Smart Student Retention & Early Warning System"
+  repository: "student-at-risk-early-warning"
+  version: "0.1.0"
+  domain: "Higher Education Learning Analytics & Decision Support"
+  random_seed: 42
+
+prediction:
+  grain:
+    - "code_module"
+    - "code_presentation"
+    - "id_student"
+  target_variable: "withdrawn_after_cutoff"
+  prediction_cutoff_relative_days: 35
+  cohort_policy: "policy_c"  # Primary: Strict Clean-Data; Alternative: policy_b (Sensitivity Analysis)
+
+stakeholders:
+  primary_user: "Academic Advisors & Student Support Officers"
+  secondary_user: "Course Directors & Educational Administrators"
+  use_case: "Early-warning risk ranking and prioritized support outreach"

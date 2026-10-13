@@ -1,0 +1,66 @@
+# Decision Support & Reporting Configuration Contract
+decision_support_queue:
+  output_path: "outputs/predictions/student_support_queue.csv"
+  grain:
+    - "code_module"
+    - "code_presentation"
+    - "id_student"
+  fields:
+    - name: "student_key"
+      description: "Pseudonymized student identifier (id_student)."
+    - name: "code_module"
+      description: "Course module code."
+    - name: "code_presentation"
+      description: "Presentation session code."
+    - name: "prediction_cutoff_day"
+      description: "Relative day cutoff (35)."
+    - name: "risk_probability"
+      description: "Calibrated predicted probability of withdrawal after Day 35."
+    - name: "priority_tier"
+      description: "Triage urgency tier: Tier 1 (Urgent), Tier 2 (Watch), Tier 3 (Standard)."
+    - name: "support_reason_summary"
+      description: "Top risk-driving engagement signals (e.g., days since last VLE click, missing due assessments)."
+    - name: "review_status"
+      description: "Operational status: Pending, Under Review, Contacted, Resolved, No Action Needed."
+    - name: "recommended_next_step"
+      description: "Prescribed supportive intervention guideline for the academic advisor."
+
+priority_tiers:
+  status: "Provisional planning thresholds pending advisor consultation"
+  tier_1_urgent:
+    provisional_probability_threshold: 0.70
+    percentile_fallback: 0.05
+    description: "High withdrawal probability; immediate proactive outreach required."
+    provisional_sla_days: 3
+    recommended_action: "Direct personal contact by academic advisor to explore learning barriers."
+  tier_2_watch:
+    provisional_probability_threshold: 0.40
+    percentile_fallback: 0.15
+    description: "Moderate withdrawal risk; learning engagement flagging."
+    provisional_sla_days: 7
+    recommended_action: "Automated check-in email and tutor alert regarding course progress."
+  tier_3_standard:
+    provisional_probability_threshold: 0.00
+    description: "Low withdrawal risk; normal course progression."
+    provisional_sla_days: null
+    recommended_action: "Standard course communications and routine monitoring."
+
+operational_capacity:
+  provisional_max_cases_per_presentation: 500
+  allow_capacity_filtering: true
+  rationale: "Provisional planning assumption based on typical advising caseload constraints."
+
+dashboard:
+  framework: "Streamlit"
+  entrypoint: "app/streamlit_app.py"
+  pages:
+    - name: "Operational Overview"
+      file: "app/components/risk_summary.py"
+    - name: "Engagement Patterns"
+      file: "app/components/model_metrics.py"
+    - name: "Student Support Queue"
+      file: "app/components/student_queue.py"
+    - name: "Model Performance"
+      file: "app/components/model_metrics.py"
+    - name: "Fairness and Limitations"
+      file: "app/components/filters.py"

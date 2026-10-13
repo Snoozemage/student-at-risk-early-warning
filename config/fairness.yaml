@@ -1,0 +1,71 @@
+# Fairness & Subgroup Audit Configuration Contract
+fairness_policy:
+  mode: "audit_only"
+  primary_baseline_predictor_status: "excluded"
+  rationale: "Demographic and socioeconomic attributes must be audited for disparity, but are excluded from primary baseline predictors as a safeguard against direct disparate treatment. However, excluding demographic predictors does not by itself eliminate proxy effects or prevent disparate impact. Model outputs are used solely for supportive, non-punitive advisor outreach."
+
+protected_attributes:
+  gender:
+    field: "gender"
+    categories: ["M", "F"]
+    reference_group: "M"
+  age_band:
+    field: "age_band"
+    categories: ["0-35", "35-55", "55<="]
+    reference_group: "0-35"
+  disability:
+    field: "disability"
+    categories: ["N", "Y"]
+    reference_group: "N"
+  imd_band:
+    field: "imd_band"
+    categories:
+      - "0-10%"
+      - "10-20"
+      - "20-30%"
+      - "30-40%"
+      - "40-50%"
+      - "50-60%"
+      - "60-70%"
+      - "70-80%"
+      - "80-90%"
+      - "90-100%"
+      - "Missing"
+    reference_group: "90-100%"
+  highest_education:
+    field: "highest_education"
+    categories:
+      - "No Formal quals"
+      - "Lower Than A Level"
+      - "A Level or Equivalent"
+      - "HE Qualification"
+      - "Post Graduate Qualification"
+    reference_group: "A Level or Equivalent"
+  region:
+    field: "region"
+    reference_group: "South East Region"
+
+subgroup_reporting_rules:
+  min_subgroup_sample_size: 50
+  small_sample_warning: "Subgroups with sample size < 50 carry an explicit statistical instability warning."
+  metrics:
+    - "selection_rate"
+    - "false_positive_rate"
+    - "false_negative_rate"
+    - "precision"
+    - "recall"
+    - "disparate_impact_ratio"
+  tolerance_thresholds:
+    disparate_impact_warning_band: [0.80, 1.25]
+    fpr_ratio_warning_threshold: 1.50
+
+optional_demographic_experiment:
+  enabled: true
+  description: "Secondary sensitivity experiment comparing models trained with vs without demographic features."
+  purpose: "Measures incremental predictive performance and examines changes in subgroup metrics when demographic features are added. Does not claim to prove that the primary baseline has no proxy reliance."
+
+responsible_use_principles:
+  human_in_the_loop: true
+  supportive_framing_only: true
+  prevent_punitive_use: true
+  transparency_in_advisor_dashboard: true

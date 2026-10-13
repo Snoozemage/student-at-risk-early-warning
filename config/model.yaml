@@ -1,0 +1,109 @@
+# Model Configuration Contract
+random_seed: 42
+
+features:
+  primary_baseline_allowlist:
+    course_context:
+      - "code_module"
+      - "presentation_season"  # Stable recurrent seasonal indicator ('B' or 'J') generalizing across calendar years
+      - "studied_credits"
+      - "num_of_prev_attempts"
+    registration:
+      - "registration_lead_time_days"
+      - "is_late_registration"  # 1 if 0 < date_registration <= 35, 0 if <= 0; null if missing under Policy B
+    vle_engagement:
+      - "vle_total_clicks_window"
+      - "vle_active_days_window"
+      - "vle_unique_sites_accessed"
+      - "vle_pre_course_clicks"
+      - "vle_recent_clicks_14d"
+      - "vle_velocity_ratio"
+      - "days_since_last_vle_interaction"  # Filled with sentinel value 65 during feature extraction
+      - "has_no_vle_activity_by_cutoff"
+      - "vle_clicks_forumng"
+      - "vle_clicks_oucontent"
+      - "vle_clicks_quiz"  # Strictly restricted to activity_type == 'quiz'
+    assessment_progress:
+      - "assessments_due_count"  # Non-exam continuous coursework with deadline <= Day 35
+      - "submissions_count_lte_cutoff"  # Genuine submissions for due-universe assessments (deadline <= 35)
+      - "submitted_on_time_count"  # Genuine submissions for due assessments with date_submitted <= deadline
+      - "missing_due_submissions_count"  # Due assessments lacking both genuine submission and banked credit
+      - "late_submissions_count_lte_cutoff"  # Genuine submissions for due assessments with date_submitted > deadline
+
+  demographic_features_policy:
+    primary_baseline: "excluded"
+    fairness_subgroup_audit: "included"
+    optional_sensitivity_experiment:
+      enabled: true
+      features:
+        - "gender"
+        - "age_band"
+        - "disability"
+        - "imd_band"
+        - "highest_education"
+        - "region"
+      purpose: "Measures incremental predictive performance and examines changes in subgroup metrics when demographic features are added. Does not claim to prove absence of proxy reliance in the primary baseline."
+
+
+algorithms:
+  dummy_baseline:
+    type: "DummyClassifier"
+    strategy: "prior"
+    description: "Predicts class prior distribution as minimum reference baseline."
+    parameters:
+      random_state: 42
+
+  logistic_regression:
+    type: "LogisticRegression"
+    description: "Interpretable linear baseline for risk probability estimation."
+    parameters:
+      penalty: "l2"
+      C: 1.0
+      solver: "lbfgs"
+      max_iter: 1000
+      class_weight: null  # Evaluated with both null and 'balanced'
+      random_state: 42
+
+  random_forest:
+    type: "RandomForestClassifier"
+    description: "Nonlinear ensemble baseline capturing interaction effects."
+    parameters:
+      n_estimators: 200
+      max_depth: 8
+      min_samples_split: 20
+      min_samples_leaf: 10
+      class_weight: null  # Evaluated with both null and 'balanced'
+      random_state: 42
+      n_jobs: -1
+
+candidate_future_algorithms:
+  - "GradientBoostingClassifier"
+  - "HistGradientBoostingClassifier"
+  - "LGBMClassifier"
+
+preprocessing:
+  numeric_pipeline:
+    imputer:
+      strategy: "median"
+      add_indicator: true
+      note: "Operates on numerical features with missingness at model pipeline input (such as registration_lead_time_days). Note that days_since_last_vle_interaction is filled with sentinel value 65 during feature extraction prior to pipeline imputation, so it contains no missing values and is neither altered nor flagged by SimpleImputer."
+    scaler: "StandardScaler"
+  categorical_pipeline:
+    imputer:
+      strategy: "constant"
+      fill_value: "MISSING"
+    encoder:
+      type: "OneHotEncoder"
+      handle_unknown: "ignore"
+      sparse_output: false
+
+training_constraints:
+  enforce_scikit_learn_pipeline: true
+  prevent_leakage_across_folds: true
+  fit_preprocessors_on_train_only: true
+
+artifact_paths:
+  dummy: "models/baseline/dummy_baseline.joblib"
+  logistic_regression: "models/baseline/logistic_regression.joblib"
+  random_forest: "models/baseline/random_forest.joblib"
+  feature_pipeline: "models/baseline/preprocessor.joblib"

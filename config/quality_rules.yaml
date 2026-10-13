@@ -1,0 +1,97 @@
+# Data Quality & Integrity Validation Rules
+source_quality_rules:
+  missing_value_marker:
+    allowed_markers: ["?"]
+    forbidden_markers: ["", "null", "NULL", "na", "NA", "None"]
+
+  key_uniqueness:
+    courses:
+      grain: ["code_module", "code_presentation"]
+      allow_duplicates: false
+    student_info:
+      grain: ["code_module", "code_presentation", "id_student"]
+      allow_duplicates: false
+    student_registration:
+      grain: ["code_module", "code_presentation", "id_student"]
+      allow_duplicates: false
+    assessments:
+      grain: ["id_assessment"]
+      allow_duplicates: false
+    vle:
+      grain: ["id_site"]
+      allow_duplicates: false
+    student_assessment:
+      grain: ["id_assessment", "id_student"]
+      allow_duplicates: false
+    student_vle:
+      grain: ["code_module", "code_presentation", "id_student", "id_site", "date"]
+      allow_duplicates: false
+
+  referential_integrity:
+    - parent: "courses"
+      child: "student_info"
+      join_keys: ["code_module", "code_presentation"]
+      allow_orphans: false
+    - parent: "courses"
+      child: "student_registration"
+      join_keys: ["code_module", "code_presentation"]
+      allow_orphans: false
+    - parent: "courses"
+      child: "assessments"
+      join_keys: ["code_module", "code_presentation"]
+      allow_orphans: false
+    - parent: "courses"
+      child: "vle"
+      join_keys: ["code_module", "code_presentation"]
+      allow_orphans: false
+    - parent: "assessments"
+      child: "student_assessment"
+      join_keys: ["id_assessment"]
+      allow_orphans: false
+    - parent: "vle"
+      child: "student_vle"
+      join_keys: ["id_site"]
+      allow_orphans: false
+    - parent: "student_info"
+      child: "student_registration"
+      join_keys: ["code_module", "code_presentation", "id_student"]
+      cardinality: "1:1"
+      allow_orphans: false
+
+exclusion_precedence_policy_c:
+  order:
+    1:
+      code: "EXCL_PRE_CUTOFF_UNREG"
+      rule: "date_unregistration <= cutoff_day"
+      description: "Student unregistered on or before prediction cutoff (Day 35). Already left course."
+    2:
+      code: "EXCL_LATE_REGISTRATION"
+      rule: "date_registration > cutoff_day"
+      description: "Student registered after prediction cutoff. Not yet enrolled at cutoff."
+    3:
+      code: "EXCL_MISSING_REGISTRATION_DATE"
+      rule: "date_registration is null"
+      description: "Registration date is unrecorded. Enrollment presence on Day 35 cannot be confirmed."
+    4:
+      code: "EXCL_WITHDRAWN_MISSING_UNREG_DATE"
+      rule: "final_result == 'Withdrawn' and date_unregistration is null"
+      description: "Recorded as Withdrawn but withdrawal timing is unrecorded. Cannot verify post-cutoff status."
+    5:
+      code: "EXCL_CONTRADICTORY_RECORD"
+      rule: "code_module == 'BBB' and code_presentation == '2013J' and id_student == 554243"
+      description: "Final result recorded as Fail but date_unregistration is Day 166. Contradictory outcome semantics."
+
+exclusion_precedence_policy_b:
+  order:
+    1:
+      code: "EXCL_PRE_CUTOFF_UNREG"
+      rule: "date_unregistration <= cutoff_day"
+      description: "Student unregistered on or before prediction cutoff."
+    2:
+      code: "EXCL_LATE_REGISTRATION"
+      rule: "date_registration > cutoff_day"
+      description: "Student registered after prediction cutoff."
+    3:
+      code: "EXCL_WITHDRAWN_MISSING_UNREG_DATE"
+      rule: "final_result == 'Withdrawn' and date_unregistration is null"
+      description: "Withdrawn status with unverified departure date."

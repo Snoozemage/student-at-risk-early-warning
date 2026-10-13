@@ -1,0 +1,125 @@
+# Temporal Feature Windows & Availability Configuration
+# Convention: All interval definitions [start_day, end_day] are inclusive integer closed intervals.
+# Number of days in interval = (end_day - start_day + 1).
+
+cutoff:
+  relative_day: 35
+  description: "End of relative Day 35 after module presentation start (inclusive)."
+
+windows:
+  total_observation:
+    start_day: -25  # Earliest recorded interaction in OULAD is Day -25
+    end_day: 35
+    duration_days: 61
+    description: "Entire observation period from earliest pre-course activity through cutoff."
+
+  pre_course:
+    start_day: -25
+    end_day: -1     # Strictly prior to course start (Day 0); disjoint from active course
+    duration_days: 25
+    description: "Orientation and pre-term engagement strictly prior to Day 0."
+
+  active_course:
+    start_day: 0    # Day 0 is course start date
+    end_day: 35
+    duration_days: 36
+    description: "First 5 weeks of active instruction (Day 0 through Day 35 inclusive)."
+
+  recent_window_14d:
+    start_day: 22
+    end_day: 35
+    duration_days: 14  # 35 - 22 + 1 = 14 days
+    description: "Last 14 days immediately preceding the Day 35 prediction cutoff."
+
+  prior_active_window_22d:
+    start_day: 0
+    end_day: 21
+    duration_days: 22  # 21 - 0 + 1 = 22 days
+    description: "Active instruction period prior to the 14-day recent window."
+
+  velocity_window_7d:
+    start_day: 29
+    end_day: 35
+    duration_days: 7   # 35 - 29 + 1 = 7 days
+    description: "Last 7 days immediately preceding the Day 35 prediction cutoff."
+
+  prior_baseline_window_29d:
+    start_day: 0
+    end_day: 28
+    duration_days: 29  # 28 - 0 + 1 = 29 days
+    description: "Active instruction baseline prior to the 7-day velocity window."
+
+temporal_invariants:
+  strict_cutoff_enforcement: true
+  max_feature_date_allowed: 35
+  forbid_future_activity: true
+
+vle_velocity_definition:
+  numerator: "clicks_window_[29, 35] / 7"
+  denominator: "(clicks_window_[0, 28] / 29) + 1.0"
+  formula: "vle_velocity_ratio = (clicks_[29, 35] / 7) / ((clicks_[0, 28] / 29) + 1.0)"
+  rationale: "Compares average daily clicks in the last 7 days against average daily clicks in the preceding 29 active days, with Laplace smoothing denominator."
+
+inactivity_representation:
+  feature_name: "days_since_last_vle_interaction"
+  definition: "35 - max(date <= 35) for students with recorded interactions."
+  zero_activity_representation:
+    raw_value: null
+    companion_indicator: "has_no_vle_activity_by_cutoff"
+    imputed_sentinel_value: 65
+    imputed_value: 65
+    imputation_timing: "pre_pipeline_feature_transformation"
+    rationale: "For students with zero interactions on or before Day 35, the recency date is unobserved. The value 65 is assigned as an upper-bound sentinel value strictly greater than the maximum possible observed gap (35 - (-25) = 60 days) during feature transformation before general imputation. Consequently, days_since_last_vle_interaction has no nulls at model input and is not modified by the general median imputer. General median imputation and indicator generation operate on other numerical features with genuine missingness (e.g. registration lead time)."
+
+feature_availability_policies:
+  demographics:
+    available_at_cutoff: true
+    source: "student_info"
+    usage: "audit_only"  # Excluded from primary baseline predictors
+  registration:
+    available_at_cutoff: true
+    source: "student_registration"
+    permitted_fields: ["date_registration"]
+    forbidden_fields: ["date_unregistration"]
+    lead_time_sign_convention:
+      formula: "-date_registration"
+      interpretation: "Positive for advance registration before Day 0; negative for late registration after Day 0."
+    late_registration_definition:
+      formula: "1 if 0 < date_registration <= 35, 0 if date_registration <= 0, null if date_registration is null"
+      policy_b_missing_handling: "Under Policy B sensitivity records where date_registration is null evaluate to null (missing) rather than 0, ensuring consistent treatment with registration_lead_time_days during median/indicator preprocessing. In Policy C, 0 missing registration dates exist."
+  vle_interactions:
+    available_at_cutoff: true
+    source: "student_vle"
+    date_filter: "date <= cutoff.relative_day"
+    permitted_activity_type_aggregations:
+      vle_clicks_forumng: "Strictly activity_type == 'forumng'"
+      vle_clicks_oucontent: "Strictly activity_type == 'oucontent'"
+      vle_clicks_quiz: "Strictly activity_type == 'quiz'"
+
+  assessment_submissions:
+    available_at_cutoff: true
+    source: "student_assessment"
+    date_filter: "date_submitted <= cutoff.relative_day"
+    assessment_universe:
+      scope: "non_exam_coursework_only"
+      filter: "assessment_type != 'Exam' and date is not null and date <= cutoff.relative_day"
+      rationale: "Restricted strictly to continuous non-exam coursework (TMA/CMA) with scheduled deadlines <= Day 35. Final exams and components without electronic submission logs are excluded from the due assessment universe. All 5 assessment progress features are strictly anchored to this due-assessment universe to guarantee mathematical consistency (submissions_count_lte_cutoff = submitted_on_time_count + late_submissions_count_lte_cutoff <= assessments_due_count)."
+      early_submissions_for_future_due_policy: "Submissions for assessments with deadlines strictly > Day 35 submitted early (observed in 2,350 students) are excluded from due-progress counts to prevent mathematical anomalies (e.g. on-time submissions exceeding due assessments). Learner engagement on future materials is captured through VLE activity features."
+    permitted_signals:
+      assessments_due_count:
+        definition: "Count of scheduled non-exam assessments with deadline <= Day 35."
+      submissions_count_lte_cutoff:
+        definition: "Count of genuine submissions by student for assessments in the due-assessment universe (deadline <= 35) with date_submitted <= 35 and is_banked == 0."
+      submitted_on_time_count:
+        definition: "Count of genuine submissions for assessments in the due-assessment universe with date_submitted <= date and date_submitted <= 35 and is_banked == 0."
+      late_submissions_count_lte_cutoff:
+        definition: "Count of genuine submissions for assessments in the due-assessment universe with date < date_submitted <= 35 and is_banked == 0."
+      missing_due_submissions_count:
+        definition: "Count of scheduled non-exam assessments in the due-assessment universe (deadline <= 35) where learner has neither a genuine submission by cutoff nor a banked transfer credit."
+    banked_records_policy:
+      source_field: "is_banked"
+      semantics: "Flag indicating assessment result transferred from prior presentation (all recorded with date_submitted = -1)."
+      baseline_treatment: "Banked records do not represent current-presentation study effort and are excluded from genuine submission counts. However, they satisfy assessment requirements and are not counted as missing due submissions."
+    forbidden_in_primary_baseline:
+      - "score"
+    forbidden_reason: "Tutor marking turnaround latency is unrecorded in OULAD; score availability at Day 35 cannot be proven."

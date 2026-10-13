@@ -1,0 +1,182 @@
+# Data Schema & Type Contract
+raw_schemas:
+  courses:
+    code_module:
+      type: "string"
+      nullable: false
+      allowed_values: ["AAA", "BBB", "CCC", "DDD", "EEE", "FFF", "GGG"]
+    code_presentation:
+      type: "string"
+      nullable: false
+      allowed_values: ["2013B", "2013J", "2014B", "2014J"]
+    module_presentation_length:
+      type: "integer"
+      nullable: false
+      min: 200
+      max: 300
+
+  assessments:
+    code_module:
+      type: "string"
+      nullable: false
+    code_presentation:
+      type: "string"
+      nullable: false
+    id_assessment:
+      type: "integer"
+      nullable: false
+    assessment_type:
+      type: "string"
+      nullable: false
+      allowed_values: ["TMA", "CMA", "Exam"]
+    date:
+      type: "integer"
+      nullable: true
+      min: 0
+      max: 300
+    weight:
+      type: "float"
+      nullable: false
+      min: 0.0
+      max: 100.0
+
+  vle:
+    id_site:
+      type: "integer"
+      nullable: false
+    code_module:
+      type: "string"
+      nullable: false
+    code_presentation:
+      type: "string"
+      nullable: false
+    activity_type:
+      type: "string"
+      nullable: false
+    week_from:
+      type: "integer"
+      nullable: true
+    week_to:
+      type: "integer"
+      nullable: true
+
+  student_info:
+    code_module:
+      type: "string"
+      nullable: false
+    code_presentation:
+      type: "string"
+      nullable: false
+    id_student:
+      type: "integer"
+      nullable: false
+    gender:
+      type: "string"
+      nullable: false
+      allowed_values: ["M", "F"]
+    region:
+      type: "string"
+      nullable: false
+    highest_education:
+      type: "string"
+      nullable: false
+    imd_band:
+      type: "string"
+      nullable: true
+    age_band:
+      type: "string"
+      nullable: false
+      allowed_values: ["0-35", "35-55", "55<="]
+    num_of_prev_attempts:
+      type: "integer"
+      nullable: false
+      min: 0
+      max: 10
+    studied_credits:
+      type: "integer"
+      nullable: false
+      min: 30
+      max: 700
+    disability:
+      type: "string"
+      nullable: false
+      allowed_values: ["N", "Y"]
+    final_result:
+      type: "string"
+      nullable: false
+      allowed_values: ["Pass", "Fail", "Withdrawn", "Distinction"]
+
+  student_registration:
+    code_module:
+      type: "string"
+      nullable: false
+    code_presentation:
+      type: "string"
+      nullable: false
+    id_student:
+      type: "integer"
+      nullable: false
+    date_registration:
+      type: "integer"
+      nullable: true
+    date_unregistration:
+      type: "integer"
+      nullable: true
+
+  student_assessment:
+    id_assessment:
+      type: "integer"
+      nullable: false
+    id_student:
+      type: "integer"
+      nullable: false
+    date_submitted:
+      type: "integer"
+      nullable: false
+    is_banked:
+      type: "integer"
+      nullable: false
+      allowed_values: [0, 1]
+    score:
+      type: "float"
+      nullable: true
+      min: 0.0
+      max: 100.0
+
+  student_vle:
+    code_module:
+      type: "string"
+      nullable: false
+    code_presentation:
+      type: "string"
+      nullable: false
+    id_student:
+      type: "integer"
+      nullable: false
+    id_site:
+      type: "integer"
+      nullable: false
+    date:
+      type: "integer"
+      nullable: false
+    sum_click:
+      type: "integer"
+      nullable: false
+      min: 1
+
+cohort_schema:
+  keys:
+    - "code_module"
+    - "code_presentation"
+    - "id_student"
+  target:
+    name: "withdrawn_after_cutoff"
+    type: "integer"
+    allowed_values: [0, 1]
+    positive_label: 1
+    negative_label: 0
+  metadata_fields:
+    - "date_registration"
+    - "date_unregistration"
+    - "final_result"
+    - "policy_version"

@@ -1,9 +1,9 @@
 # Data Dictionary & Schema Specification (OULAD)
 
 **Project:** Smart Student Retention & Early Warning System
-**Phase:** Phase 0 — OULAD Workspace and Source Audit
-**Date:** 2026-10-13 (Updated post-audit verification)
-**Status:** Verified against Workspace CSVs & Official Documentation
+**Phase:** Phase 1 — Business Specification and Data Contract
+**Date:** 2026-10-13 (Updated Phase 1 formalization)
+**Status:** Proposed Specification (Pending Review)
 
 ---
 
@@ -12,6 +12,7 @@
 * **Null Representation in Raw Data:** Across all seven source CSV files in the raw dataset, missing or unrecorded values are strictly encoded as the single literal character `?`. Empty strings (`""`) do not occur as missing value representations in any column.
 * **Date Encoding:** All date attributes are integer offsets in days measured relative to the official course start date (Day `0`). Negative values indicate occurrences prior to the start of the course presentation (e.g. Day `-30` indicates 30 days prior to course start).
 * **Primary Prediction Unit:** The core entity for student retention prediction is the composite grain `(code_module, code_presentation, id_student)`.
+* **Primary Cohort Policy:** Policy C (Strict Clean-Data) is the primary cohort contract; Policy B is formalized for sensitivity analysis.
 
 ---
 
@@ -147,10 +148,14 @@
 
 ---
 
-## 3. Data Quality & Ambiguity Summary
+## 3. Data Quality & Formal Edge Case Resolutions
 
 1. **Missing Data Encoding:** All seven raw CSV tables strictly encode missing values using the literal character `'?'`. Empty strings `""` are not observed in the raw files. Cleaners and loaders must normalize `'?'` to standard missing indicators (`None` / `pd.NA`).
 2. **`studentInfo` vs `studentRegistration` 1-to-1 Match:** Exactly 32,593 records exist in both tables with zero unmatched keys and zero duplicate keys on `(code_module, code_presentation, id_student)`.
-3. **93 Withdrawn Students without Unregistration Date:** 93 students have `final_result = Withdrawn` but `date_unregistration` is `'?'`. Phase 1 must define an explicit policy on whether they are retained in the evaluation cohort or excluded due to unverified withdrawal timing.
-4. **9 Fail Students with Unregistration Date:** 9 records have `final_result = Fail` yet record a withdrawal date (8 with date $\le 0$ and 1 with date $166$). Phase 1 cohort filtering must apply unregistration exclusion $\le$ Day 35 regardless of final result.
-5. **45 Missing Registration Dates:** 45 records have `date_registration = '?'` (38 unregistered $\le$ Day 35, 1 unregistered Day 159, 6 with both dates missing). Phase 1 data contracts must formalize handling for the 7 cases that do not unregister early.
+3. **93 Withdrawn Students without Unregistration Date:** Formally excluded under both Policy C and Policy B (`EXCL_WITHDRAWN_MISSING_UNREG_DATE`). Without unregistration dates, withdrawal timing relative to the Day 35 cutoff cannot be verified.
+4. **9 Fail Students with Unregistration Date:**
+   - 8 records have `date_unregistration <= 0` and are excluded in both policies under `EXCL_PRE_CUTOFF_UNREG` (`date_unregistration <= 35`).
+   - 1 record (`'BBB', '2013J', '554243'`) with `date_unregistration = 166` is excluded in Policy C under `EXCL_CONTRADICTORY_RECORD` and retained in Policy B.
+5. **45 Missing Registration Dates:**
+   - 38 records have `date_unregistration <= 35` and are excluded under `EXCL_PRE_CUTOFF_UNREG`.
+   - The remaining 7 records (1 Withdrawn at Day 146, 5 Fail, 1 Pass) are excluded in Policy C under `EXCL_MISSING_REGISTRATION_DATE` (unverifiable enrollment timing) and retained in Policy B.

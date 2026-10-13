@@ -1,0 +1,91 @@
+# Data Sources Configuration Contract
+raw_data_root: "data/raw/oulad"
+format: "csv"
+missing_value_marker: "?"
+
+tables:
+  courses:
+    filename: "courses.csv"
+    primary_key:
+      - "code_module"
+      - "code_presentation"
+    expected_rows: 22
+    expected_cols: 3
+
+  assessments:
+    filename: "assessments.csv"
+    primary_key:
+      - "id_assessment"
+    foreign_keys:
+      courses:
+        - "code_module"
+        - "code_presentation"
+    expected_rows: 206
+    expected_cols: 6
+
+  vle:
+    filename: "vle.csv"
+    primary_key:
+      - "id_site"
+    foreign_keys:
+      courses:
+        - "code_module"
+        - "code_presentation"
+    expected_rows: 6364
+    expected_cols: 6
+
+  student_info:
+    filename: "studentInfo.csv"
+    primary_key:
+      - "code_module"
+      - "code_presentation"
+      - "id_student"
+    foreign_keys:
+      courses:
+        - "code_module"
+        - "code_presentation"
+    expected_rows: 32593
+    expected_cols: 12
+
+  student_registration:
+    filename: "studentRegistration.csv"
+    primary_key:
+      - "code_module"
+      - "code_presentation"
+      - "id_student"
+    foreign_keys:
+      student_info:
+        - "code_module"
+        - "code_presentation"
+        - "id_student"
+    expected_rows: 32593
+    expected_cols: 5
+
+  student_assessment:
+    filename: "studentAssessment.csv"
+    primary_key:
+      - "id_assessment"
+      - "id_student"
+    foreign_keys:
+      assessments:
+        - "id_assessment"
+    expected_rows: 173912
+    expected_cols: 5
+
+  student_vle:
+    filename: "studentVle.csv"
+    primary_key:
+      - "code_module"
+      - "code_presentation"
+      - "id_student"
+      - "id_site"
+      - "date"
+    foreign_keys:
+      vle:
+        - "id_site"
+      student_info:
+        - "code_module"
+        - "code_presentation"
+        - "id_student"
+    expected_rows: 10655280
+    expected_cols: 6
