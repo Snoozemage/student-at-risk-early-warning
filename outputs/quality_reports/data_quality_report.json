@@ -1,0 +1,1538 @@
+{
+  "report_type": "data_quality_report",
+  "phase": "Phase 2 - Ingestion, Cleaning and Data Quality",
+  "timestamp_utc": "2026-10-13T07:29:21.360236+00:00",
+  "status": "PASSED",
+  "summary": {
+    "tables_audited": 7,
+    "total_rows_audited": 10900970,
+    "total_violations": 0,
+    "total_warnings": 4,
+    "schema_valid": true,
+    "primary_keys_valid": true,
+    "referential_integrity_valid": true,
+    "label_valid": true,
+    "temporal_valid": true,
+    "relationship_rules_configured": 9,
+    "relationship_rules_executed": 9
+  },
+  "all_violations": [],
+  "all_warnings": [
+    "Found 9 record(s) where student outcome is non-Withdrawn ('Fail', 'Pass', 'Distinction') but date_unregistration is populated (includes documented anomaly BBB/2013J/554243: True).",
+    "Found 93 Withdrawn record(s) with missing date_unregistration timestamp.",
+    "student_registration contains 45 record(s) with unrecorded date_registration.",
+    "assessments contains 11 assessment(s) with missing deadline dates (typically final exams)."
+  ],
+  "table_summaries": {
+    "courses": {
+      "row_count": 22,
+      "col_count": 3,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "module_presentation_length"
+      ],
+      "dtypes": {
+        "code_module": "string",
+        "code_presentation": "string",
+        "module_presentation_length": "Int64"
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "module_presentation_length": 0
+      }
+    },
+    "assessments": {
+      "row_count": 206,
+      "col_count": 6,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_assessment",
+        "assessment_type",
+        "date",
+        "weight"
+      ],
+      "dtypes": {
+        "code_module": "string",
+        "code_presentation": "string",
+        "id_assessment": "Int64",
+        "assessment_type": "string",
+        "date": "Int64",
+        "weight": "Float64"
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_assessment": 0,
+        "assessment_type": 0,
+        "date": 11,
+        "weight": 0
+      }
+    },
+    "vle": {
+      "row_count": 6364,
+      "col_count": 6,
+      "columns": [
+        "id_site",
+        "code_module",
+        "code_presentation",
+        "activity_type",
+        "week_from",
+        "week_to"
+      ],
+      "dtypes": {
+        "id_site": "Int64",
+        "code_module": "string",
+        "code_presentation": "string",
+        "activity_type": "string",
+        "week_from": "Int64",
+        "week_to": "Int64"
+      },
+      "null_counts": {
+        "id_site": 0,
+        "code_module": 0,
+        "code_presentation": 0,
+        "activity_type": 0,
+        "week_from": 5243,
+        "week_to": 5243
+      }
+    },
+    "student_info": {
+      "row_count": 32593,
+      "col_count": 12,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "gender",
+        "region",
+        "highest_education",
+        "imd_band",
+        "age_band",
+        "num_of_prev_attempts",
+        "studied_credits",
+        "disability",
+        "final_result"
+      ],
+      "dtypes": {
+        "code_module": "string",
+        "code_presentation": "string",
+        "id_student": "Int64",
+        "gender": "string",
+        "region": "string",
+        "highest_education": "string",
+        "imd_band": "string",
+        "age_band": "string",
+        "num_of_prev_attempts": "Int64",
+        "studied_credits": "Int64",
+        "disability": "string",
+        "final_result": "string"
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "gender": 0,
+        "region": 0,
+        "highest_education": 0,
+        "imd_band": 1111,
+        "age_band": 0,
+        "num_of_prev_attempts": 0,
+        "studied_credits": 0,
+        "disability": 0,
+        "final_result": 0
+      }
+    },
+    "student_registration": {
+      "row_count": 32593,
+      "col_count": 5,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "date_registration",
+        "date_unregistration"
+      ],
+      "dtypes": {
+        "code_module": "string",
+        "code_presentation": "string",
+        "id_student": "Int64",
+        "date_registration": "Int64",
+        "date_unregistration": "Int64"
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "date_registration": 45,
+        "date_unregistration": 22521
+      }
+    },
+    "student_assessment": {
+      "row_count": 173912,
+      "col_count": 5,
+      "columns": [
+        "id_assessment",
+        "id_student",
+        "date_submitted",
+        "is_banked",
+        "score"
+      ],
+      "dtypes": {
+        "id_assessment": "Int64",
+        "id_student": "Int64",
+        "date_submitted": "Int64",
+        "is_banked": "Int64",
+        "score": "Float64"
+      },
+      "null_counts": {
+        "id_assessment": 0,
+        "id_student": 0,
+        "date_submitted": 0,
+        "is_banked": 0,
+        "score": 173
+      }
+    },
+    "student_vle": {
+      "row_count": 10655280,
+      "col_count": 6,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "id_site",
+        "date",
+        "sum_click"
+      ],
+      "dtypes": {
+        "code_module": "string",
+        "code_presentation": "string",
+        "id_student": "Int64",
+        "id_site": "Int64",
+        "date": "Int64",
+        "sum_click": "Int64"
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "id_site": 0,
+        "date": 0,
+        "sum_click": 0
+      }
+    }
+  },
+  "schema_validation": {
+    "is_valid": true,
+    "total_violations": 0,
+    "tables": {
+      "courses": {
+        "table_name": "courses",
+        "is_valid": true,
+        "total_rows": 22,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "code_module": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_presentation": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "module_presentation_length": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      },
+      "assessments": {
+        "table_name": "assessments",
+        "is_valid": true,
+        "total_rows": 206,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "code_module": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_presentation": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "id_assessment": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "assessment_type": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "date": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 11,
+            "is_valid": true,
+            "violations": []
+          },
+          "weight": {
+            "present": true,
+            "dtype": "Float64",
+            "expected_type": "float",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      },
+      "vle": {
+        "table_name": "vle",
+        "is_valid": true,
+        "total_rows": 6364,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "id_site": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_module": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_presentation": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "activity_type": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "week_from": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 5243,
+            "is_valid": true,
+            "violations": []
+          },
+          "week_to": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 5243,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      },
+      "student_info": {
+        "table_name": "student_info",
+        "is_valid": true,
+        "total_rows": 32593,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "code_module": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_presentation": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "id_student": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "gender": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "region": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "highest_education": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "imd_band": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 1111,
+            "is_valid": true,
+            "violations": []
+          },
+          "age_band": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "num_of_prev_attempts": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "studied_credits": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "disability": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "final_result": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      },
+      "student_registration": {
+        "table_name": "student_registration",
+        "is_valid": true,
+        "total_rows": 32593,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "code_module": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_presentation": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "id_student": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "date_registration": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 45,
+            "is_valid": true,
+            "violations": []
+          },
+          "date_unregistration": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 22521,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      },
+      "student_assessment": {
+        "table_name": "student_assessment",
+        "is_valid": true,
+        "total_rows": 173912,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "id_assessment": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "id_student": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "date_submitted": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "is_banked": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "score": {
+            "present": true,
+            "dtype": "Float64",
+            "expected_type": "float",
+            "null_count": 173,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      },
+      "student_vle": {
+        "table_name": "student_vle",
+        "is_valid": true,
+        "total_rows": 10655280,
+        "violations": [],
+        "warnings": [],
+        "column_checks": {
+          "code_module": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "code_presentation": {
+            "present": true,
+            "dtype": "string",
+            "expected_type": "string",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "id_student": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "id_site": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "date": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          },
+          "sum_click": {
+            "present": true,
+            "dtype": "Int64",
+            "expected_type": "integer",
+            "null_count": 0,
+            "is_valid": true,
+            "violations": []
+          }
+        }
+      }
+    }
+  },
+  "key_validation": {
+    "is_valid": true,
+    "total_violations": 0,
+    "tables": {
+      "courses": {
+        "table_name": "courses",
+        "grain": [
+          "code_module",
+          "code_presentation"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 22,
+        "distinct_keys": 22,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "assessments": {
+        "table_name": "assessments",
+        "grain": [
+          "id_assessment"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 206,
+        "distinct_keys": 206,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "vle": {
+        "table_name": "vle",
+        "grain": [
+          "id_site"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 6364,
+        "distinct_keys": 6364,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_info": {
+        "table_name": "student_info",
+        "grain": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 32593,
+        "distinct_keys": 32593,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_registration": {
+        "table_name": "student_registration",
+        "grain": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 32593,
+        "distinct_keys": 32593,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_assessment": {
+        "table_name": "student_assessment",
+        "grain": [
+          "id_assessment",
+          "id_student"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 173912,
+        "distinct_keys": 173912,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_vle": {
+        "table_name": "student_vle",
+        "grain": [
+          "code_module",
+          "code_presentation",
+          "id_student",
+          "id_site",
+          "date"
+        ],
+        "is_primary_key": false,
+        "allow_duplicates": true,
+        "semantic_type": "interaction_event_log",
+        "is_valid": true,
+        "total_rows": 10655280,
+        "distinct_keys": 8459320,
+        "rows_in_repeated_groups": 3810465,
+        "excess_duplicate_rows": 2195960,
+        "repeated_keys_count": 1614505,
+        "null_key_count": 0,
+        "violations": []
+      }
+    },
+    "unique_primary_key_checks": {
+      "courses": {
+        "table_name": "courses",
+        "grain": [
+          "code_module",
+          "code_presentation"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 22,
+        "distinct_keys": 22,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "assessments": {
+        "table_name": "assessments",
+        "grain": [
+          "id_assessment"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 206,
+        "distinct_keys": 206,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "vle": {
+        "table_name": "vle",
+        "grain": [
+          "id_site"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 6364,
+        "distinct_keys": 6364,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_info": {
+        "table_name": "student_info",
+        "grain": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 32593,
+        "distinct_keys": 32593,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_registration": {
+        "table_name": "student_registration",
+        "grain": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 32593,
+        "distinct_keys": 32593,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      },
+      "student_assessment": {
+        "table_name": "student_assessment",
+        "grain": [
+          "id_assessment",
+          "id_student"
+        ],
+        "is_primary_key": true,
+        "allow_duplicates": false,
+        "semantic_type": "entity_table",
+        "is_valid": true,
+        "total_rows": 173912,
+        "distinct_keys": 173912,
+        "rows_in_repeated_groups": 0,
+        "excess_duplicate_rows": 0,
+        "repeated_keys_count": 0,
+        "null_key_count": 0,
+        "violations": []
+      }
+    },
+    "permitted_grain_repetition_audit": {
+      "student_vle": {
+        "table_name": "student_vle",
+        "grain": [
+          "code_module",
+          "code_presentation",
+          "id_student",
+          "id_site",
+          "date"
+        ],
+        "is_primary_key": false,
+        "allow_duplicates": true,
+        "semantic_type": "interaction_event_log",
+        "is_valid": true,
+        "total_rows": 10655280,
+        "distinct_keys": 8459320,
+        "rows_in_repeated_groups": 3810465,
+        "excess_duplicate_rows": 2195960,
+        "repeated_keys_count": 1614505,
+        "null_key_count": 0,
+        "violations": []
+      }
+    }
+  },
+  "relationship_validation": {
+    "is_valid": true,
+    "configured_rules_count": 9,
+    "executed_rules_count": 9,
+    "total_violations": 0,
+    "relationships": [
+      {
+        "parent": "courses",
+        "child": "student_info",
+        "join_keys": [
+          "code_module",
+          "code_presentation"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "courses",
+        "child": "student_registration",
+        "join_keys": [
+          "code_module",
+          "code_presentation"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "courses",
+        "child": "assessments",
+        "join_keys": [
+          "code_module",
+          "code_presentation"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "courses",
+        "child": "vle",
+        "join_keys": [
+          "code_module",
+          "code_presentation"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "assessments",
+        "child": "student_assessment",
+        "join_keys": [
+          "id_assessment"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "vle",
+        "child": "student_vle",
+        "join_keys": [
+          "id_site",
+          "code_module",
+          "code_presentation"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "student_info",
+        "child": "student_vle",
+        "join_keys": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "cardinality": null,
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "student_info",
+        "child": "student_assessment",
+        "via": "assessments",
+        "join_keys": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "bridge_keys": [
+          "id_assessment"
+        ],
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      },
+      {
+        "parent": "student_info",
+        "child": "student_registration",
+        "join_keys": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ],
+        "cardinality": "1:1",
+        "is_valid": true,
+        "orphan_child_rows": 0,
+        "orphan_child_keys": 0,
+        "violations": []
+      }
+    ]
+  },
+  "label_validation": {
+    "is_valid": true,
+    "total_fatal_errors": 0,
+    "total_warnings": 2,
+    "checks": [
+      {
+        "check_name": "outcome_categories_valid",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "Final outcome category must belong to documented OULAD set: Pass, Distinction, Fail, Withdrawn."
+      },
+      {
+        "check_name": "non_withdrawn_with_unregistration_date",
+        "severity": "WARNING",
+        "count": 9,
+        "is_valid": true,
+        "known_record_554243_detected": true,
+        "examples": [
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013J",
+            "id_student": 362907,
+            "final_result": "Fail",
+            "date_unregistration": 0.0
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013J",
+            "id_student": 365288,
+            "final_result": "Fail",
+            "date_unregistration": 0.0
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013J",
+            "id_student": 554243,
+            "final_result": "Fail",
+            "date_unregistration": 166.0
+          },
+          {
+            "code_module": "DDD",
+            "code_presentation": "2013J",
+            "id_student": 315082,
+            "final_result": "Fail",
+            "date_unregistration": 0.0
+          },
+          {
+            "code_module": "DDD",
+            "code_presentation": "2013J",
+            "id_student": 403052,
+            "final_result": "Fail",
+            "date_unregistration": 0.0
+          },
+          {
+            "code_module": "DDD",
+            "code_presentation": "2013J",
+            "id_student": 582954,
+            "final_result": "Fail",
+            "date_unregistration": -7.0
+          },
+          {
+            "code_module": "FFF",
+            "code_presentation": "2013J",
+            "id_student": 234004,
+            "final_result": "Fail",
+            "date_unregistration": 0.0
+          },
+          {
+            "code_module": "FFF",
+            "code_presentation": "2013J",
+            "id_student": 523777,
+            "final_result": "Fail",
+            "date_unregistration": 0.0
+          },
+          {
+            "code_module": "FFF",
+            "code_presentation": "2013J",
+            "id_student": 601640,
+            "final_result": "Fail",
+            "date_unregistration": -4.0
+          }
+        ],
+        "rationale": "OULAD documentation specifies that only Withdrawn students have date_unregistration recorded. Records such as BBB/2013J/554243 (Fail with date_unregistration=166.0) represent documented source contradictions."
+      },
+      {
+        "check_name": "withdrawn_with_missing_unregistration_date",
+        "severity": "WARNING",
+        "count": 93,
+        "is_valid": true,
+        "examples": [
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014B",
+            "id_student": 2512349,
+            "final_result": "Withdrawn"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014J",
+            "id_student": 271047,
+            "final_result": "Withdrawn"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014J",
+            "id_student": 417978,
+            "final_result": "Withdrawn"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014J",
+            "id_student": 636660,
+            "final_result": "Withdrawn"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014J",
+            "id_student": 647876,
+            "final_result": "Withdrawn"
+          }
+        ],
+        "rationale": "Students recorded as Withdrawn but lacking date_unregistration cannot have exact withdrawal timing confirmed."
+      },
+      {
+        "check_name": "unregistration_before_registration",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "A student cannot unregister before their registration date."
+      }
+    ],
+    "violations": [],
+    "warnings": [
+      "Found 9 record(s) where student outcome is non-Withdrawn ('Fail', 'Pass', 'Distinction') but date_unregistration is populated (includes documented anomaly BBB/2013J/554243: True).",
+      "Found 93 Withdrawn record(s) with missing date_unregistration timestamp."
+    ]
+  },
+  "temporal_validation": {
+    "is_valid": true,
+    "total_fatal_errors": 0,
+    "total_warnings": 2,
+    "checks": [
+      {
+        "table": "courses",
+        "check_name": "course_length_positive",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "Module presentation length must be a strictly positive integer (> 0 days)."
+      },
+      {
+        "table": "student_registration",
+        "check_name": "missing_registration_dates",
+        "severity": "WARNING",
+        "count": 45,
+        "is_valid": true,
+        "examples": [
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013B",
+            "id_student": 630346
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013J",
+            "id_student": 57369
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013J",
+            "id_student": 342678
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014B",
+            "id_student": 582496
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014B",
+            "id_student": 607646
+          }
+        ],
+        "rationale": "In OULAD, a small cohort of students (45 records) have unrecorded registration dates."
+      },
+      {
+        "table": "student_registration",
+        "check_name": "registration_chronology_valid",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "A student cannot unregister before registering."
+      },
+      {
+        "table": "assessments",
+        "check_name": "missing_assessment_deadlines",
+        "severity": "WARNING",
+        "count": 11,
+        "is_valid": true,
+        "examples": [
+          {
+            "code_module": "AAA",
+            "code_presentation": "2013J",
+            "id_assessment": 1757,
+            "assessment_type": "Exam"
+          },
+          {
+            "code_module": "AAA",
+            "code_presentation": "2014J",
+            "id_assessment": 1763,
+            "assessment_type": "Exam"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013B",
+            "id_assessment": 14990,
+            "assessment_type": "Exam"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2013J",
+            "id_assessment": 15002,
+            "assessment_type": "Exam"
+          },
+          {
+            "code_module": "BBB",
+            "code_presentation": "2014B",
+            "id_assessment": 15014,
+            "assessment_type": "Exam"
+          }
+        ],
+        "rationale": "Final examination assessments in OULAD often lack pre-scheduled relative submission deadlines."
+      },
+      {
+        "table": "vle",
+        "check_name": "vle_week_window_consistent",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "Resource end availability week (week_to) must be greater than or equal to start week (week_from)."
+      },
+      {
+        "table": "student_assessment",
+        "check_name": "submission_date_present",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "Submitted assessment records must have a recorded submission timestamp."
+      },
+      {
+        "table": "student_vle",
+        "check_name": "interaction_date_present",
+        "severity": "ERROR",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "Student VLE interaction date is non-nullable; valid timestamps are required for feature windowing."
+      },
+      {
+        "table": "student_vle",
+        "check_name": "precourse_interaction_dates_plausible",
+        "severity": "WARNING",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "Documented pre-course VLE access window begins at Day -25 relative to presentation start."
+      },
+      {
+        "table": "student_vle",
+        "check_name": "postcourse_interaction_dates_plausible",
+        "severity": "WARNING",
+        "count": 0,
+        "is_valid": true,
+        "examples": [],
+        "rationale": "VLE interactions recorded after module presentation length exceed formal course duration."
+      }
+    ],
+    "violations": [],
+    "warnings": [
+      "student_registration contains 45 record(s) with unrecorded date_registration.",
+      "assessments contains 11 assessment(s) with missing deadline dates (typically final exams)."
+    ]
+  },
+  "missing_values_audit": {
+    "courses": {
+      "table_name": "courses",
+      "total_rows": 22,
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "module_presentation_length": 0
+      },
+      "null_percentages": {
+        "code_module": 0.0,
+        "code_presentation": 0.0,
+        "module_presentation_length": 0.0
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    },
+    "assessments": {
+      "table_name": "assessments",
+      "total_rows": 206,
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_assessment": 0,
+        "assessment_type": 0,
+        "date": 11,
+        "weight": 0
+      },
+      "null_percentages": {
+        "code_module": 0.0,
+        "code_presentation": 0.0,
+        "id_assessment": 0.0,
+        "assessment_type": 0.0,
+        "date": 5.34,
+        "weight": 0.0
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    },
+    "vle": {
+      "table_name": "vle",
+      "total_rows": 6364,
+      "null_counts": {
+        "id_site": 0,
+        "code_module": 0,
+        "code_presentation": 0,
+        "activity_type": 0,
+        "week_from": 5243,
+        "week_to": 5243
+      },
+      "null_percentages": {
+        "id_site": 0.0,
+        "code_module": 0.0,
+        "code_presentation": 0.0,
+        "activity_type": 0.0,
+        "week_from": 82.39,
+        "week_to": 82.39
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    },
+    "student_info": {
+      "table_name": "student_info",
+      "total_rows": 32593,
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "gender": 0,
+        "region": 0,
+        "highest_education": 0,
+        "imd_band": 1111,
+        "age_band": 0,
+        "num_of_prev_attempts": 0,
+        "studied_credits": 0,
+        "disability": 0,
+        "final_result": 0
+      },
+      "null_percentages": {
+        "code_module": 0.0,
+        "code_presentation": 0.0,
+        "id_student": 0.0,
+        "gender": 0.0,
+        "region": 0.0,
+        "highest_education": 0.0,
+        "imd_band": 3.41,
+        "age_band": 0.0,
+        "num_of_prev_attempts": 0.0,
+        "studied_credits": 0.0,
+        "disability": 0.0,
+        "final_result": 0.0
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    },
+    "student_registration": {
+      "table_name": "student_registration",
+      "total_rows": 32593,
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "date_registration": 45,
+        "date_unregistration": 22521
+      },
+      "null_percentages": {
+        "code_module": 0.0,
+        "code_presentation": 0.0,
+        "id_student": 0.0,
+        "date_registration": 0.14,
+        "date_unregistration": 69.1
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    },
+    "student_assessment": {
+      "table_name": "student_assessment",
+      "total_rows": 173912,
+      "null_counts": {
+        "id_assessment": 0,
+        "id_student": 0,
+        "date_submitted": 0,
+        "is_banked": 0,
+        "score": 173
+      },
+      "null_percentages": {
+        "id_assessment": 0.0,
+        "id_student": 0.0,
+        "date_submitted": 0.0,
+        "is_banked": 0.0,
+        "score": 0.1
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    },
+    "student_vle": {
+      "table_name": "student_vle",
+      "total_rows": 10655280,
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "id_site": 0,
+        "date": 0,
+        "sum_click": 0
+      },
+      "null_percentages": {
+        "code_module": 0.0,
+        "code_presentation": 0.0,
+        "id_student": 0.0,
+        "id_site": 0.0,
+        "date": 0.0,
+        "sum_click": 0.0
+      },
+      "forbidden_marker_violations": [],
+      "violations": [],
+      "is_valid": true
+    }
+  },
+  "identifier_validation": {
+    "courses": {
+      "table_name": "courses",
+      "is_valid": true,
+      "checked_rows": 22,
+      "errors": []
+    },
+    "assessments": {
+      "table_name": "assessments",
+      "is_valid": true,
+      "checked_rows": 206,
+      "errors": []
+    },
+    "vle": {
+      "table_name": "vle",
+      "is_valid": true,
+      "checked_rows": 6364,
+      "errors": []
+    },
+    "student_info": {
+      "table_name": "student_info",
+      "is_valid": true,
+      "checked_rows": 32593,
+      "errors": []
+    },
+    "student_registration": {
+      "table_name": "student_registration",
+      "is_valid": true,
+      "checked_rows": 32593,
+      "errors": []
+    },
+    "student_assessment": {
+      "table_name": "student_assessment",
+      "is_valid": true,
+      "checked_rows": 173912,
+      "errors": []
+    },
+    "student_vle": {
+      "table_name": "student_vle",
+      "is_valid": true,
+      "checked_rows": 10655280,
+      "errors": []
+    }
+  }
+}

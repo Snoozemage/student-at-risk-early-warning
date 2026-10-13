@@ -69,20 +69,30 @@ tables:
     foreign_keys:
       assessments:
         - "id_assessment"
+      student_info:
+        via: "assessments"
+        join_keys:
+          - "code_module"
+          - "code_presentation"
+          - "id_student"
     expected_rows: 173912
     expected_cols: 5
 
   student_vle:
     filename: "studentVle.csv"
-    primary_key:
+    primary_key: null
+    composite_grain:
       - "code_module"
       - "code_presentation"
       - "id_student"
       - "id_site"
       - "date"
+    is_unique_primary_key: false
     foreign_keys:
       vle:
         - "id_site"
+        - "code_module"
+        - "code_presentation"
       student_info:
         - "code_module"
         - "code_presentation"

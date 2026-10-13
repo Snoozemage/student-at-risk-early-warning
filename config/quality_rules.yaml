@@ -25,7 +25,9 @@ source_quality_rules:
       allow_duplicates: false
     student_vle:
       grain: ["code_module", "code_presentation", "id_student", "id_site", "date"]
-      allow_duplicates: false
+      allow_duplicates: true
+      is_primary_key: false
+      semantic_type: "interaction_event_log"
 
   referential_integrity:
     - parent: "courses"
@@ -50,8 +52,19 @@ source_quality_rules:
       allow_orphans: false
     - parent: "vle"
       child: "student_vle"
-      join_keys: ["id_site"]
+      join_keys: ["id_site", "code_module", "code_presentation"]
       allow_orphans: false
+    - parent: "student_info"
+      child: "student_vle"
+      join_keys: ["code_module", "code_presentation", "id_student"]
+      allow_orphans: false
+    - parent: "student_info"
+      child: "student_assessment"
+      via_parent: "assessments"
+      join_keys: ["code_module", "code_presentation", "id_student"]
+      bridge_keys: ["id_assessment"]
+      allow_orphans: false
+      rule_description: "Student assessment records must resolve through assessments to a valid student_info enrollment"
     - parent: "student_info"
       child: "student_registration"
       join_keys: ["code_module", "code_presentation", "id_student"]

@@ -460,5 +460,305 @@
     "students_in_studentAssessment_with_multiple_enrollments": 3136,
     "unsafe_id_student_only_join_rows": 207319,
     "unsafe_id_student_only_mismatched_rows": 33407
-  }
+  },
+  "dataset_name": "Open University Learning Analytics Dataset (OULAD)",
+  "generated_at_utc": "2026-10-13T07:27:58.835412+00:00",
+  "raw_data_root": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad",
+  "format": "csv",
+  "missing_value_marker": "?",
+  "tables": {
+    "courses": {
+      "filename": "courses.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/courses.csv",
+      "file_size_bytes": 526,
+      "file_size_mb": 0.0,
+      "sha256": "4f16eee7454b15e109b0a21a0e43be820e6846ed6f9301bb7feb5ab5ad737a75",
+      "row_count": 22,
+      "column_count": 3,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "module_presentation_length"
+      ],
+      "primary_key": [
+        "code_module",
+        "code_presentation"
+      ],
+      "composite_grain": [
+        "code_module",
+        "code_presentation"
+      ],
+      "is_unique_primary_key": true,
+      "foreign_keys": {},
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "module_presentation_length": 0
+      }
+    },
+    "assessments": {
+      "filename": "assessments.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/assessments.csv",
+      "file_size_bytes": 8211,
+      "file_size_mb": 0.01,
+      "sha256": "9ce92381e4a0ac457f8e251b2eb2c179ed51e023ab30d1d671a0268bd62316ba",
+      "row_count": 206,
+      "column_count": 6,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_assessment",
+        "assessment_type",
+        "date",
+        "weight"
+      ],
+      "primary_key": [
+        "id_assessment"
+      ],
+      "composite_grain": [
+        "id_assessment"
+      ],
+      "is_unique_primary_key": true,
+      "foreign_keys": {
+        "courses": [
+          "code_module",
+          "code_presentation"
+        ]
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_assessment": 0,
+        "assessment_type": 0,
+        "date": 11,
+        "weight": 0
+      }
+    },
+    "vle": {
+      "filename": "vle.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/vle.csv",
+      "file_size_bytes": 270612,
+      "file_size_mb": 0.26,
+      "sha256": "d7a146497edd0e47ef536144b58796c07b554002d3753e848b8e4cd8a56f4c38",
+      "row_count": 6364,
+      "column_count": 6,
+      "columns": [
+        "id_site",
+        "code_module",
+        "code_presentation",
+        "activity_type",
+        "week_from",
+        "week_to"
+      ],
+      "primary_key": [
+        "id_site"
+      ],
+      "composite_grain": [
+        "id_site"
+      ],
+      "is_unique_primary_key": true,
+      "foreign_keys": {
+        "courses": [
+          "code_module",
+          "code_presentation"
+        ]
+      },
+      "null_counts": {
+        "id_site": 0,
+        "code_module": 0,
+        "code_presentation": 0,
+        "activity_type": 0,
+        "week_from": 5243,
+        "week_to": 5243
+      }
+    },
+    "student_info": {
+      "filename": "studentInfo.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/studentInfo.csv",
+      "file_size_bytes": 3462763,
+      "file_size_mb": 3.3,
+      "sha256": "815fbc3e2de29f79900bc63f0345a35db62c9146afaa1d86e7107b8b3beffc60",
+      "row_count": 32593,
+      "column_count": 12,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "gender",
+        "region",
+        "highest_education",
+        "imd_band",
+        "age_band",
+        "num_of_prev_attempts",
+        "studied_credits",
+        "disability",
+        "final_result"
+      ],
+      "primary_key": [
+        "code_module",
+        "code_presentation",
+        "id_student"
+      ],
+      "composite_grain": [
+        "code_module",
+        "code_presentation",
+        "id_student"
+      ],
+      "is_unique_primary_key": true,
+      "foreign_keys": {
+        "courses": [
+          "code_module",
+          "code_presentation"
+        ]
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "gender": 0,
+        "region": 0,
+        "highest_education": 0,
+        "imd_band": 1111,
+        "age_band": 0,
+        "num_of_prev_attempts": 0,
+        "studied_credits": 0,
+        "disability": 0,
+        "final_result": 0
+      }
+    },
+    "student_registration": {
+      "filename": "studentRegistration.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/studentRegistration.csv",
+      "file_size_bytes": 1132550,
+      "file_size_mb": 1.08,
+      "sha256": "bbc87a0de1fe2a9ec6decce1ca6c1a02cf17b54ad3bdcc673fc6413b41c61d47",
+      "row_count": 32593,
+      "column_count": 5,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "date_registration",
+        "date_unregistration"
+      ],
+      "primary_key": [
+        "code_module",
+        "code_presentation",
+        "id_student"
+      ],
+      "composite_grain": [
+        "code_module",
+        "code_presentation",
+        "id_student"
+      ],
+      "is_unique_primary_key": true,
+      "foreign_keys": {
+        "student_info": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ]
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "date_registration": 45,
+        "date_unregistration": 22521
+      }
+    },
+    "student_assessment": {
+      "filename": "studentAssessment.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/studentAssessment.csv",
+      "file_size_bytes": 5690483,
+      "file_size_mb": 5.43,
+      "sha256": "b1839e17618a5de36b6d189a242d3123f7939a56c8c9ccef0c17b9199c614a6b",
+      "row_count": 173912,
+      "column_count": 5,
+      "columns": [
+        "id_assessment",
+        "id_student",
+        "date_submitted",
+        "is_banked",
+        "score"
+      ],
+      "primary_key": [
+        "id_assessment",
+        "id_student"
+      ],
+      "composite_grain": [
+        "id_assessment",
+        "id_student"
+      ],
+      "is_unique_primary_key": true,
+      "foreign_keys": {
+        "assessments": [
+          "id_assessment"
+        ],
+        "student_info": {
+          "via": "assessments",
+          "join_keys": [
+            "code_module",
+            "code_presentation",
+            "id_student"
+          ]
+        }
+      },
+      "null_counts": {
+        "id_assessment": 0,
+        "id_student": 0,
+        "date_submitted": 0,
+        "is_banked": 0,
+        "score": 173
+      }
+    },
+    "student_vle": {
+      "filename": "studentVle.csv",
+      "file_path": "C:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/data/raw/oulad/studentVle.csv",
+      "file_size_bytes": 453836331,
+      "file_size_mb": 432.81,
+      "sha256": "52668253d876c5becbcb72185977152700cecab2942aca807fecc3dd54b937f0",
+      "row_count": 10655280,
+      "column_count": 6,
+      "columns": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "id_site",
+        "date",
+        "sum_click"
+      ],
+      "primary_key": null,
+      "composite_grain": [
+        "code_module",
+        "code_presentation",
+        "id_student",
+        "id_site",
+        "date"
+      ],
+      "is_unique_primary_key": false,
+      "foreign_keys": {
+        "vle": [
+          "id_site",
+          "code_module",
+          "code_presentation"
+        ],
+        "student_info": [
+          "code_module",
+          "code_presentation",
+          "id_student"
+        ]
+      },
+      "null_counts": {
+        "code_module": 0,
+        "code_presentation": 0,
+        "id_student": 0,
+        "id_site": 0,
+        "date": 0,
+        "sum_click": 0
+      }
+    }
+  },
+  "total_raw_rows": 10900970,
+  "total_raw_bytes": 464401476
 }

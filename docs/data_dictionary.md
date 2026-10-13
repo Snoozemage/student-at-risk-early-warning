@@ -135,7 +135,7 @@
 **Description:** Log of daily student interactions with VLE resources.
 **Observed Rows:** 10,655,280
 **Observed Columns:** 6
-**Primary Key:** Natural composite `(code_module, code_presentation, id_student, id_site, date)`.
+**Grain / Composite Keys:** Natural composite grain `(code_module, code_presentation, id_student, id_site, date)`. *(Note: Not a unique primary key; `studentVle` is an interaction event log where multiple interaction entries occur on the same date for the same resource across different sessions; 3,810,465 records belong to repeated key groups across 8,459,320 unique key combinations, representing 2,195,960 excess repeated rows. Aggregation to the student-presentation grain is mandatory during feature extraction)*.
 
 | Column Name | Observed Type | Official Description | Value Domain / Observed Range | Missing Count | Notes & Key Relationships |
 |---|---|---|---|---|---|
