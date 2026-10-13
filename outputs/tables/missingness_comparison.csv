@@ -1,0 +1,4 @@
+column,retained_missing_count,retained_missing_pct,withdrawn_missing_count,withdrawn_missing_pct,delta_pct,p_value
+imd_band,874,3.9,146,3.09,-0.81,0.007937663462631007
+date_registration,0,0.0,0,0.0,0.0,1.0
+studied_credits,0,0.0,0,0.0,0.0,1.0

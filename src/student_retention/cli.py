@@ -5,18 +5,23 @@ from collections.abc import Sequence
 from pathlib import Path
 
 from student_retention.cleaning.cleaning_pipeline import CleaningPipeline
+from student_retention.eda.eda_runner import EDARunner
 from student_retention.ingestion.manifest import SourceManifest
 from student_retention.logging_config import get_logger
 from student_retention.paths import (
     DATA_RAW_DIR,
+    FIGURES_DIR,
     INTERIM_NORMALIZED_DIR,
     PROCESSED_COHORT_DIR,
     QUALITY_REPORTS_DIR,
+    REPORTS_DIR,
+    TABLES_DIR,
 )
 from student_retention.transformation.build_cohort import CohortBuilder
 from student_retention.validation.report_generator import generate_quality_report
 
 logger = get_logger("student_retention.cli")
+
 
 
 def run_audit(args: argparse.Namespace) -> int:
@@ -78,6 +83,26 @@ def run_build_cohort(args: argparse.Namespace) -> int:
     print(f"  - Negative cases (0):   {target_dist['negative_cases']:,}")
     if "saved_paths" in results:
         print(f"  - Output saved to:      {results['saved_paths']['cohort_parquet']}")
+    return 0
+
+
+def run_eda(args: argparse.Namespace) -> int:
+    """Execute exploratory data analysis & early warning signal discovery pipeline."""
+    logger.info("Executing EDA pipeline...")
+    runner = EDARunner(
+        cohort_path=args.cohort_path,
+        normalized_dir=args.data_dir,
+        figures_dir=args.figures_dir,
+        tables_dir=args.tables_dir,
+        reports_dir=args.reports_dir,
+    )
+    results = runner.run()
+    print("\nEDA Pipeline Execution Completed Successfully!")
+    print(f"  - Cohort records analyzed: {results['cohort_rows']:,}")
+    print(f"  - Withdrawal base rate:    {results['withdrawal_rate']:.2%}")
+    print(f"  - Tables exported to:      {results['tables_dir']}")
+    print(f"  - Figures exported to:     {results['figures_dir']}")
+    print(f"  - Report generated:        {results['report_path']}")
     return 0
 
 
@@ -163,6 +188,42 @@ def build_parser() -> argparse.ArgumentParser:
         help="Do not save outputs to disk",
     )
 
+    # Subcommand: run-eda
+    eda_parser = subparsers.add_parser(
+        "run-eda",
+        help="Execute exploratory data analysis and early warning discovery pipeline.",
+    )
+    eda_parser.add_argument(
+        "--cohort-path",
+        type=Path,
+        default=PROCESSED_COHORT_DIR / "cohort_policy_c.parquet",
+        help="Path to cohort dataset (default: data/processed/cohort/cohort_policy_c.parquet)",
+    )
+    eda_parser.add_argument(
+        "--data-dir",
+        type=Path,
+        default=INTERIM_NORMALIZED_DIR,
+        help="Directory containing normalized interim tables (default: data/interim/normalized)",
+    )
+    eda_parser.add_argument(
+        "--figures-dir",
+        type=Path,
+        default=FIGURES_DIR,
+        help="Directory to save figures (default: outputs/figures)",
+    )
+    eda_parser.add_argument(
+        "--tables-dir",
+        type=Path,
+        default=TABLES_DIR,
+        help="Directory to save tables (default: outputs/tables)",
+    )
+    eda_parser.add_argument(
+        "--reports-dir",
+        type=Path,
+        default=REPORTS_DIR,
+        help="Directory to save reports (default: outputs/reports)",
+    )
+
     return parser
 
 
@@ -177,6 +238,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_clean_and_validate(args)
     elif args.command == "build-cohort":
         return run_build_cohort(args)
+    elif args.command == "run-eda":
+        return run_eda(args)
     else:
         parser.print_help()
         return 0

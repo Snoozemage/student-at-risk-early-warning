@@ -21,10 +21,15 @@ INTERIM_VALIDATED_DIR = DATA_INTERIM_DIR / "validated"
 PROCESSED_COHORT_DIR = DATA_PROCESSED_DIR / "cohort"
 PROCESSED_FEATURES_DIR = DATA_PROCESSED_DIR / "features"
 
+# Notebooks directory
+NOTEBOOKS_DIR = PROJECT_ROOT / "notebooks"
+
 # Outputs directories
 OUTPUTS_DIR = PROJECT_ROOT / "outputs"
 QUALITY_REPORTS_DIR = OUTPUTS_DIR / "quality_reports"
 REPORTS_DIR = OUTPUTS_DIR / "reports"
+FIGURES_DIR = OUTPUTS_DIR / "figures"
+TABLES_DIR = OUTPUTS_DIR / "tables"
 LOGS_DIR = OUTPUTS_DIR / "logs"
 
 def ensure_directories():
@@ -36,9 +41,12 @@ def ensure_directories():
         DATA_PROCESSED_DIR,
         PROCESSED_COHORT_DIR,
         PROCESSED_FEATURES_DIR,
+        NOTEBOOKS_DIR,
         OUTPUTS_DIR,
         QUALITY_REPORTS_DIR,
         REPORTS_DIR,
+        FIGURES_DIR,
+        TABLES_DIR,
         LOGS_DIR,
     ]:
         directory.mkdir(parents=True, exist_ok=True)

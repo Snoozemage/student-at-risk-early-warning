@@ -1,0 +1,36 @@
+attribute,category_value,total_count,withdrawn_count,withdrawal_rate_pct,pct_of_cohort
+gender,F,12207,1989,16.29,45.0
+gender,M,14921,2729,18.29,55.0
+region,East Anglian Region,2767,439,15.87,10.2
+region,East Midlands Region,1894,352,18.59,6.98
+region,Ireland,1093,183,16.74,4.03
+region,London Region,2542,439,17.27,9.37
+region,North Region,1518,273,17.98,5.6
+region,North Western Region,2297,428,18.63,8.47
+region,Scotland,3107,569,18.31,11.45
+region,South East Region,1739,278,15.99,6.41
+region,South Region,2587,424,16.39,9.54
+region,South West Region,2026,350,17.28,7.47
+region,Wales,1887,325,17.22,6.96
+region,West Midlands Region,2050,383,18.68,7.56
+region,Yorkshire Region,1621,275,16.96,5.98
+highest_education,A Level or Equivalent,11890,1886,15.86,43.83
+highest_education,HE Qualification,4097,654,15.96,15.1
+highest_education,Lower Than A Level,10600,2074,19.57,39.07
+highest_education,No Formal quals,258,60,23.26,0.95
+highest_education,Post Graduate Qualification,283,44,15.55,1.04
+imd_band,0-10%,2614,539,20.62,9.64
+imd_band,10-20,2791,523,18.74,10.29
+imd_band,20-30%,2935,608,20.72,10.82
+imd_band,30-40%,2948,505,17.13,10.87
+imd_band,40-50%,2671,458,17.15,9.85
+imd_band,50-60%,2649,428,16.16,9.76
+imd_band,60-70%,2468,425,17.22,9.1
+imd_band,70-80%,2475,394,15.92,9.12
+imd_band,80-90%,2345,360,15.35,8.64
+imd_band,90-100%,2212,332,15.01,8.15
+age_band,0-35,18889,3343,17.7,69.63
+age_band,35-55,8048,1346,16.72,29.67
+age_band,55<=,191,29,15.18,0.7
+disability,N,24566,4072,16.58,90.56
+disability,Y,2562,646,25.21,9.44
