@@ -640,6 +640,7 @@ class CohortBuilder:
         self,
         save_outputs: bool = True,
         output_dir: Path | None = None,
+        report_dir: Path | None = None,
     ) -> dict[str, Any]:
         """Execute end-to-end cohort construction pipeline and optionally persist results."""
         out_dir = Path(output_dir) if output_dir else PROCESSED_COHORT_DIR
@@ -665,7 +666,14 @@ class CohortBuilder:
             exclusions_df.to_parquet(excl_parquet, index=False)
             exclusions_df.to_csv(excl_csv, index=False)
 
-            report_path = QUALITY_REPORTS_DIR / f"{prefix}_audit_report.json"
+            if report_dir is not None:
+                rep_dir = Path(report_dir)
+            elif output_dir is not None and Path(output_dir).resolve() != PROCESSED_COHORT_DIR.resolve():
+                rep_dir = Path(output_dir)
+            else:
+                rep_dir = QUALITY_REPORTS_DIR
+
+            report_path = rep_dir / f"{prefix}_audit_report.json"
             report_path.parent.mkdir(parents=True, exist_ok=True)
             with open(report_path, "w", encoding="utf-8") as f:
                 json.dump(audit_report, f, indent=2)

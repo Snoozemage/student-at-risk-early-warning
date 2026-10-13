@@ -124,6 +124,7 @@ def test_cohort_builder_run_persists_artifacts(tmp_path):
 
     with open(saved_paths["audit_report_json"], encoding="utf-8") as f:
         report = json.load(f)
+    assert Path(saved_paths["audit_report_json"]).parent == output_dir
     assert report["policy"] == "policy_c"
     assert report["reconciliation"]["is_reconciled"] is True
     assert report["reconciliation"]["eligible_cohort_records"] == 2
