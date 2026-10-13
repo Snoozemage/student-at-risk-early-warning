@@ -32,6 +32,10 @@ FIGURES_DIR = OUTPUTS_DIR / "figures"
 TABLES_DIR = OUTPUTS_DIR / "tables"
 LOGS_DIR = OUTPUTS_DIR / "logs"
 
+# Model artifact directories
+MODELS_DIR = PROJECT_ROOT / "models"
+MODELS_BASELINE_DIR = MODELS_DIR / "baseline"
+
 def ensure_directories():
     """Ensure required runtime directories exist."""
     for directory in [
@@ -48,5 +52,7 @@ def ensure_directories():
         FIGURES_DIR,
         TABLES_DIR,
         LOGS_DIR,
+        MODELS_DIR,
+        MODELS_BASELINE_DIR,
     ]:
         directory.mkdir(parents=True, exist_ok=True)

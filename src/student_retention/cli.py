@@ -12,6 +12,7 @@ from student_retention.paths import (
     DATA_RAW_DIR,
     FIGURES_DIR,
     INTERIM_NORMALIZED_DIR,
+    MODELS_BASELINE_DIR,
     PROCESSED_COHORT_DIR,
     PROCESSED_FEATURES_DIR,
     QUALITY_REPORTS_DIR,
@@ -124,6 +125,75 @@ def run_build_features(args: argparse.Namespace) -> int:
     print(f"  - Features extracted:      {len(feature_df.columns):,}")
     print(f"  - Validation status:       {report['metrics']['validation_status']}")
     print(f"  - Output directory:        {args.output_dir}")
+    return 0
+
+
+def run_train_models(args: argparse.Namespace) -> int:
+    """Execute model training, cross-validation, and evaluation pipeline."""
+    import pandas as pd
+
+    from student_retention.modeling.train import train_and_evaluate_all_models
+
+    logger.info("Executing Phase 6 Model Training Pipeline from %s", args.features_path)
+    if not args.features_path.exists():
+        logger.error("Features not found at %s", args.features_path)
+        return 1
+
+    df = pd.read_parquet(args.features_path)
+    results = train_and_evaluate_all_models(
+        feature_df=df,
+        save_artifacts=True,
+        random_state=args.random_state,
+    )
+    print("\nPhase 6 Model Training and Evaluation Completed Successfully!")
+    cv_table = results["cv_summary"][
+        ["model_key", "cv_pr_auc_mean", "cv_pr_auc_std", "cv_roc_auc_mean", "validation_optimal_threshold", "validation_threshold_f1"]
+    ]
+    print("\nCross-Validation Summary (5-Fold GroupKFold):")
+    print(cv_table.to_string(index=False))
+
+    test_table = results["test_summary"][
+        ["model_key", "pr_auc", "roc_auc", "brier_score", "decision_threshold", "precision", "recall", "f1"]
+    ]
+    print("\nHeld-Out Test Evaluation Summary:")
+    print(test_table.to_string(index=False))
+    return 0
+
+
+def run_evaluate_models(args: argparse.Namespace) -> int:
+    """Execute model evaluation and figure generation."""
+    import pandas as pd
+
+    from student_retention.features.feature_selection import select_primary_features
+    from student_retention.modeling.evaluate import generate_evaluation_figures
+    from student_retention.modeling.predict import load_model
+    from student_retention.modeling.splits import split_by_student_group
+
+    logger.info("Executing Phase 6 Model Evaluation and Figure Generation...")
+    if not args.features_path.exists():
+        logger.error("Features not found at %s", args.features_path)
+        return 1
+
+    df = pd.read_parquet(args.features_path)
+    clean_df = select_primary_features(df, include_target=True, include_identifiers=True)
+    _, test_df = split_by_student_group(clean_df, test_size=0.20, random_state=42)
+
+    models = {}
+    for mname, fname in [
+        ("dummy_baseline", "dummy_baseline.joblib"),
+        ("logistic_regression", "logistic_regression.joblib"),
+        ("random_forest", "random_forest.joblib"),
+    ]:
+        mpath = args.models_dir / fname
+        if mpath.exists():
+            models[mname] = load_model(mpath)
+
+    if not models:
+        logger.error("No models found in %s", args.models_dir)
+        return 1
+
+    generate_evaluation_figures(test_df, models, args.figures_dir)
+    print(f"\nEvaluation figures successfully exported to: {args.figures_dir}")
     return 0
 
 
@@ -287,6 +357,48 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory to save quality report (default: outputs/quality_reports or output-dir if custom)",
     )
 
+    # Subcommand: train-models
+    train_parser = subparsers.add_parser(
+        "train-models",
+        help="Train baseline models and evaluate cross-validation performance.",
+    )
+    train_parser.add_argument(
+        "--features-path",
+        type=Path,
+        default=PROCESSED_FEATURES_DIR / "feature_matrix_policy_c.parquet",
+        help="Path to feature matrix Parquet (default: data/processed/features/feature_matrix_policy_c.parquet)",
+    )
+    train_parser.add_argument(
+        "--random-state",
+        type=int,
+        default=42,
+        help="Random seed for splitting and training (default: 42)",
+    )
+
+    # Subcommand: evaluate-models
+    eval_parser = subparsers.add_parser(
+        "evaluate-models",
+        help="Evaluate models, generate curves and diagnostic figures.",
+    )
+    eval_parser.add_argument(
+        "--features-path",
+        type=Path,
+        default=PROCESSED_FEATURES_DIR / "feature_matrix_policy_c.parquet",
+        help="Path to feature matrix Parquet (default: data/processed/features/feature_matrix_policy_c.parquet)",
+    )
+    eval_parser.add_argument(
+        "--models-dir",
+        type=Path,
+        default=MODELS_BASELINE_DIR,
+        help="Directory containing trained model artifacts (default: models/baseline)",
+    )
+    eval_parser.add_argument(
+        "--figures-dir",
+        type=Path,
+        default=FIGURES_DIR,
+        help="Directory to save generated figures (default: outputs/figures)",
+    )
+
     return parser
 
 
@@ -305,6 +417,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_eda(args)
     elif args.command == "build-features":
         return run_build_features(args)
+    elif args.command == "train-models":
+        return run_train_models(args)
+    elif args.command == "evaluate-models":
+        return run_evaluate_models(args)
     else:
         parser.print_help()
         return 0

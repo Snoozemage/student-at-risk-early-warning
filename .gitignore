@@ -52,11 +52,17 @@ outputs/predictions/
 
 # Trained model binaries (keep model code/configuration and model cards)
 models/*.joblib
+models/**/*.joblib
 models/*.pkl
+models/**/*.pkl
 models/*.pickle
+models/**/*.pickle
 models/*.onnx
+models/**/*.onnx
 models/*.pt
+models/**/*.pt
 models/*.pth
+models/**/*.pth
 
 # OS files
 .DS_Store
