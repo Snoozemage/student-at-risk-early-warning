@@ -277,6 +277,15 @@
       "studied_credits": 0,
       "disability": 0,
       "final_result": 0
+    },
+    "distinct_students_with_multiple_enrollments": 3538,
+    "excess_enrollment_records": 3808,
+    "enrollment_frequency_distribution": {
+      "1_presentation": 25247,
+      "2_presentations": 3293,
+      "3_presentations": 221,
+      "4_presentations": 23,
+      "5_presentations": 1
     }
   },
   "studentRegistration.csv": {
@@ -418,7 +427,18 @@
       "Fail": 7037,
       "Distinction": 3024
     },
-    "withdrawal_rate_in_eligible": 0.1767
+    "withdrawal_rate_in_eligible": 0.1767,
+    "unregistered_lte_35_excluded": 5349,
+    "unregistered_lte_35_breakdown": {
+      "withdrawn_lte_35": 5341,
+      "fail_lte_35": 8
+    },
+    "late_registration_gt_35_excluded": 15,
+    "late_registration_gt_35_breakdown": {
+      "Fail": 7,
+      "Pass": 5,
+      "Withdrawn": 3
+    }
   },
   "referential_integrity": {
     "all_courses_cp_count": 22,
@@ -434,5 +454,11 @@
     "sv_students_missing": 0,
     "sa_students_in_info": true,
     "sa_students_missing": 0
+  },
+  "assessment_join_safety": {
+    "unique_students_in_studentAssessment": 23369,
+    "students_in_studentAssessment_with_multiple_enrollments": 3136,
+    "unsafe_id_student_only_join_rows": 207319,
+    "unsafe_id_student_only_mismatched_rows": 33407
   }
 }
