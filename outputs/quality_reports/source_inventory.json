@@ -1,0 +1,438 @@
+{
+  "OULAD.names": {
+    "size_bytes": 12278,
+    "size_mb": 0.01,
+    "sha256": "e497bc5232f385ece30a7e964b0339bd9b74ba9b9083508b66628fed9dc23ebe"
+  },
+  "assessments.csv": {
+    "size_bytes": 8211,
+    "size_mb": 0.01,
+    "sha256": "9ce92381e4a0ac457f8e251b2eb2c179ed51e023ab30d1d671a0268bd62316ba",
+    "rows": 206,
+    "columns": [
+      "code_module",
+      "code_presentation",
+      "id_assessment",
+      "assessment_type",
+      "date",
+      "weight"
+    ],
+    "unique_id_assessment": 206,
+    "type_counts": {
+      "TMA": 106,
+      "Exam": 24,
+      "CMA": 76
+    },
+    "date_min": 12,
+    "date_max": 261,
+    "null_dates_count": 11,
+    "assessments_due_lte_35": 22,
+    "cp_weight_summary": {
+      "AAA_2013J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "AAA_2014J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "BBB_2013B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "BBB_2013J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "BBB_2014B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "BBB_2014J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "CCC_2014B": {
+        "total_weight": 300.0,
+        "exams": [
+          100.0,
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "CCC_2014J": {
+        "total_weight": 300.0,
+        "exams": [
+          100.0,
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "DDD_2013B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "DDD_2013J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "DDD_2014B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "DDD_2014J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "EEE_2013J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "EEE_2014B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "EEE_2014J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "FFF_2013B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "FFF_2013J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "FFF_2014B": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "FFF_2014J": {
+        "total_weight": 200.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 100.0
+      },
+      "GGG_2013J": {
+        "total_weight": 100.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 0.0
+      },
+      "GGG_2014B": {
+        "total_weight": 100.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 0.0
+      },
+      "GGG_2014J": {
+        "total_weight": 100.0,
+        "exams": [
+          100.0
+        ],
+        "non_exams_sum": 0.0
+      }
+    }
+  },
+  "courses.csv": {
+    "size_bytes": 526,
+    "size_mb": 0.0,
+    "sha256": "4f16eee7454b15e109b0a21a0e43be820e6846ed6f9301bb7feb5ab5ad737a75",
+    "rows": 22,
+    "columns": [
+      "code_module",
+      "code_presentation",
+      "module_presentation_length"
+    ],
+    "unique_keys": 22,
+    "lengths": {
+      "AAA_2013J": 268,
+      "AAA_2014J": 269,
+      "BBB_2013J": 268,
+      "BBB_2014J": 262,
+      "BBB_2013B": 240,
+      "BBB_2014B": 234,
+      "CCC_2014J": 269,
+      "CCC_2014B": 241,
+      "DDD_2013J": 261,
+      "DDD_2014J": 262,
+      "DDD_2013B": 240,
+      "DDD_2014B": 241,
+      "EEE_2013J": 268,
+      "EEE_2014J": 269,
+      "EEE_2014B": 241,
+      "FFF_2013J": 268,
+      "FFF_2014J": 269,
+      "FFF_2013B": 240,
+      "FFF_2014B": 241,
+      "GGG_2013J": 261,
+      "GGG_2014J": 269,
+      "GGG_2014B": 241
+    }
+  },
+  "studentAssessment.csv": {
+    "size_bytes": 5690483,
+    "size_mb": 5.43,
+    "sha256": "b1839e17618a5de36b6d189a242d3123f7939a56c8c9ccef0c17b9199c614a6b",
+    "rows": 173912,
+    "unique_id_student": 23369,
+    "unique_id_assessment": 188,
+    "is_banked_count": 1909,
+    "null_score_count": 173,
+    "score_min": 0.0,
+    "score_max": 100.0,
+    "score_mean": 75.8,
+    "score_fail_count": 7578
+  },
+  "studentInfo.csv": {
+    "size_bytes": 3462763,
+    "size_mb": 3.3,
+    "sha256": "815fbc3e2de29f79900bc63f0345a35db62c9146afaa1d86e7107b8b3beffc60",
+    "rows": 32593,
+    "columns": [
+      "code_module",
+      "code_presentation",
+      "id_student",
+      "gender",
+      "region",
+      "highest_education",
+      "imd_band",
+      "age_band",
+      "num_of_prev_attempts",
+      "studied_credits",
+      "disability",
+      "final_result"
+    ],
+    "unique_id_student": 28785,
+    "unique_keys": 32593,
+    "has_duplicate_keys": false,
+    "final_result_counts": {
+      "Pass": 12361,
+      "Withdrawn": 10156,
+      "Fail": 7052,
+      "Distinction": 3024
+    },
+    "missing_values": {
+      "code_module": 0,
+      "code_presentation": 0,
+      "id_student": 0,
+      "gender": 0,
+      "region": 0,
+      "highest_education": 0,
+      "imd_band": 1111,
+      "age_band": 0,
+      "num_of_prev_attempts": 0,
+      "studied_credits": 0,
+      "disability": 0,
+      "final_result": 0
+    }
+  },
+  "studentRegistration.csv": {
+    "size_bytes": 1132550,
+    "size_mb": 1.08,
+    "sha256": "bbc87a0de1fe2a9ec6decce1ca6c1a02cf17b54ad3bdcc673fc6413b41c61d47",
+    "rows": 32593,
+    "columns": [
+      "code_module",
+      "code_presentation",
+      "id_student",
+      "date_registration",
+      "date_unregistration"
+    ],
+    "unique_keys": 32593,
+    "duplicate_key_count": 0,
+    "null_date_registration": 45,
+    "null_date_unregistration": 22521
+  },
+  "studentVle.csv": {
+    "size_bytes": 453836331,
+    "size_mb": 432.81,
+    "sha256": "52668253d876c5becbcb72185977152700cecab2942aca807fecc3dd54b937f0",
+    "columns": [
+      "code_module",
+      "code_presentation",
+      "id_student",
+      "id_site",
+      "date",
+      "sum_click"
+    ],
+    "rows": 10655280,
+    "unique_id_student": 26074,
+    "unique_id_site": 6268,
+    "min_date": -25,
+    "max_date": 269,
+    "interactions_before_day_0": 688988,
+    "interactions_lte_day_35": 3253906,
+    "interactions_gt_day_35": 7401374,
+    "null_date_count": 0,
+    "null_sum_click_count": 0,
+    "sum_clicks_total": 39605099
+  },
+  "vle.csv": {
+    "size_bytes": 270612,
+    "size_mb": 0.26,
+    "sha256": "d7a146497edd0e47ef536144b58796c07b554002d3753e848b8e4cd8a56f4c38",
+    "rows": 6364,
+    "columns": [
+      "id_site",
+      "code_module",
+      "code_presentation",
+      "activity_type",
+      "week_from",
+      "week_to"
+    ],
+    "unique_id_site": 6364,
+    "activity_type_counts": {
+      "resource": 2660,
+      "oucontent": 996,
+      "url": 886,
+      "homepage": 22,
+      "subpage": 1055,
+      "glossary": 21,
+      "forumng": 194,
+      "oucollaborate": 82,
+      "dataplus": 28,
+      "quiz": 127,
+      "ouelluminate": 21,
+      "sharedsubpage": 3,
+      "questionnaire": 61,
+      "page": 102,
+      "externalquiz": 26,
+      "ouwiki": 49,
+      "dualpane": 20,
+      "repeatactivity": 5,
+      "folder": 2,
+      "htmlactivity": 4
+    },
+    "null_week_from": 5243,
+    "null_week_to": 5243
+  },
+  "relationship_info_reg": {
+    "keys_in_info_count": 32593,
+    "keys_in_reg_count": 32593,
+    "keys_in_both": 32593,
+    "keys_in_info_not_reg": 0,
+    "keys_in_reg_not_info": 0
+  },
+  "cross_tab_final_result_unreg": {
+    "Pass": {
+      "with_unreg_date": 0,
+      "no_unreg_date": 12361,
+      "min_unreg": null,
+      "max_unreg": null,
+      "unreg_lte_0": 0,
+      "unreg_1_to_35": 0,
+      "unreg_gt_35": 0
+    },
+    "Withdrawn": {
+      "with_unreg_date": 10063,
+      "no_unreg_date": 93,
+      "min_unreg": -365,
+      "max_unreg": 444,
+      "unreg_lte_0": 3089,
+      "unreg_1_to_35": 2252,
+      "unreg_gt_35": 4722
+    },
+    "Fail": {
+      "with_unreg_date": 9,
+      "no_unreg_date": 7043,
+      "min_unreg": -7,
+      "max_unreg": 166,
+      "unreg_lte_0": 8,
+      "unreg_1_to_35": 0,
+      "unreg_gt_35": 1
+    },
+    "Distinction": {
+      "with_unreg_date": 0,
+      "no_unreg_date": 3024,
+      "min_unreg": null,
+      "max_unreg": null,
+      "unreg_lte_0": 0,
+      "unreg_1_to_35": 0,
+      "unreg_gt_35": 0
+    }
+  },
+  "day_35_simulation": {
+    "total_info_records": 32593,
+    "withdrawn_lte_35_excluded": 5349,
+    "eligible_cohort_size": 27229,
+    "target_distribution": {
+      "0": 22417,
+      "1": 4812
+    },
+    "final_result_distribution": {
+      "Pass": 12356,
+      "Withdrawn": 4812,
+      "Fail": 7037,
+      "Distinction": 3024
+    },
+    "withdrawal_rate_in_eligible": 0.1767
+  },
+  "referential_integrity": {
+    "all_courses_cp_count": 22,
+    "vle_cp_in_courses": true,
+    "assessments_cp_in_courses": true,
+    "info_cp_in_courses": true,
+    "reg_cp_in_courses": true,
+    "sa_assessments_in_assessments_csv": true,
+    "sa_assessments_missing": 0,
+    "sv_sites_in_vle_csv": true,
+    "sv_sites_missing": 0,
+    "sv_students_in_info": true,
+    "sv_students_missing": 0,
+    "sa_students_in_info": true,
+    "sa_students_missing": 0
+  }
+}
