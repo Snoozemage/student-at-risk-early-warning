@@ -71,8 +71,13 @@ def audit_missing_values(
 
     # 2. Check for configured forbidden markers across string and object columns
     for col in df.select_dtypes(include=["object", "string"]).columns:
+        col_s = df[col]
         for marker in forbidden_markers:
-            marker_count = int((df[col] == marker).sum())
+            if marker == "":
+                marker_mask = (col_s == "") | (col_s.notna() & (col_s.astype(str).str.strip() == ""))
+            else:
+                marker_mask = (col_s == marker) | (col_s.notna() & (col_s.astype(str).str.strip() == marker))
+            marker_count = int(marker_mask.sum())
             if marker_count > 0:
                 marker_repr = "empty string" if marker == "" else f"'{marker}'"
                 violations.append(

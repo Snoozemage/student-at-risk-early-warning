@@ -1,0 +1,49 @@
+{
+  "dataset_name": "Open University Learning Analytics Dataset (OULAD)",
+  "generated_at_utc": "2026-10-13T11:13:17.175125+00:00",
+  "policy": "policy_b",
+  "prediction_cutoff_relative_days": 35,
+  "reconciliation": {
+    "raw_student_info_records": 32593,
+    "raw_student_registration_records": 32593,
+    "total_source_records": 32593,
+    "total_excluded_records": 5457,
+    "pct_excluded": 16.7429,
+    "eligible_cohort_records": 27136,
+    "pct_eligible": 83.2571,
+    "is_reconciled": true
+  },
+  "target_distribution": {
+    "positive_cases": 4719,
+    "negative_cases": 22417,
+    "positive_base_rate_pct": 17.3902,
+    "negative_class_breakdown": {
+      "Pass": 12356,
+      "Fail": 7037,
+      "Distinction": 3024
+    }
+  },
+  "exclusion_precedence_hierarchy": {
+    "step_1": {
+      "step": 1,
+      "code": "EXCL_PRE_CUTOFF_UNREG",
+      "reason": "Student unregistered on or before prediction cutoff (Day 35). Already left course.",
+      "count": 5349,
+      "pct_of_raw": 16.4115
+    },
+    "step_2": {
+      "step": 2,
+      "code": "EXCL_LATE_REGISTRATION",
+      "reason": "Student registered after prediction cutoff (Day 35). Not yet enrolled at cutoff.",
+      "count": 15,
+      "pct_of_raw": 0.046
+    },
+    "step_4": {
+      "step": 4,
+      "code": "EXCL_WITHDRAWN_MISSING_UNREG_DATE",
+      "reason": "Recorded as Withdrawn but withdrawal timing is unrecorded. Cannot verify post-cutoff status.",
+      "count": 93,
+      "pct_of_raw": 0.2853
+    }
+  }
+}

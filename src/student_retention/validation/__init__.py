@@ -12,6 +12,7 @@ from student_retention.validation.relationship_checks import (
 from student_retention.validation.report_generator import generate_quality_report
 from student_retention.validation.schema_checks import (
     validate_all_schemas,
+    validate_courses_reference_table,
     validate_table_schema,
 )
 from student_retention.validation.temporal_checks import (
@@ -23,6 +24,7 @@ __all__ = [
     "validate_all_primary_keys",
     "validate_all_relationships",
     "validate_all_schemas",
+    "validate_courses_reference_table",
     "validate_relationship",
     "validate_source_labels",
     "validate_source_temporal_properties",

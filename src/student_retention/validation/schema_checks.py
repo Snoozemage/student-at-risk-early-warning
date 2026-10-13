@@ -213,3 +213,42 @@ def validate_all_schemas(
         "total_violations": total_violations,
         "tables": results,
     }
+
+
+def validate_courses_reference_table(
+    courses_df: pd.DataFrame,
+    error_cls: type[Exception] = ValueError,
+    schema_cfg: dict[str, Any] | None = None,
+    rules_cfg: dict[str, Any] | None = None,
+) -> None:
+    """Validate courses reference DataFrame against schema contract and primary key uniqueness.
+
+    Ensures that courses has required columns, valid types, permitted domain values for
+    code_module and code_presentation, valid module_presentation_length, and strictly unique
+    primary keys on (code_module, code_presentation).
+
+    Args:
+        courses_df: Courses DataFrame to validate.
+        error_cls: Exception class to raise on violation (e.g. ValueError or CohortInvariantError).
+        schema_cfg: Optional parsed schema configuration.
+        rules_cfg: Optional parsed quality rules configuration.
+
+    Raises:
+        error_cls: If courses_df is not a DataFrame, or violates schema or primary key uniqueness contracts.
+    """
+    if not isinstance(courses_df, pd.DataFrame):
+        raise error_cls(f"courses reference table must be a pandas DataFrame, got {type(courses_df).__name__}")
+
+    v_schema = validate_table_schema("courses", courses_df, schema_cfg=schema_cfg)
+    if not v_schema["is_valid"]:
+        raise error_cls(
+            f"Invalid courses reference table schema: {'; '.join(v_schema['violations'])}"
+        )
+
+    from student_retention.validation.key_checks import validate_table_primary_key
+
+    v_key = validate_table_primary_key("courses", courses_df, rules_cfg=rules_cfg)
+    if not v_key["is_valid"]:
+        raise error_cls(
+            f"Invalid courses reference table primary key: {'; '.join(v_key['violations'])}"
+        )

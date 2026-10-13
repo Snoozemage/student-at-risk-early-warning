@@ -93,8 +93,10 @@ def normalize_table(
 
         # Identify which values were non-null before type coercion
         was_notna = raw_series.notna()
-        # Non-empty strings: empty strings are checked by missingness audit
-        if pd.api.types.is_string_dtype(raw_series.dtype) or pd.api.types.is_object_dtype(raw_series.dtype):
+        # For string columns, empty strings are preserved for schema/missingness audit
+        if col_type == "string" and (
+            pd.api.types.is_string_dtype(raw_series.dtype) or pd.api.types.is_object_dtype(raw_series.dtype)
+        ):
             was_notna = was_notna & (raw_series != "")
 
         if col_type == "string":

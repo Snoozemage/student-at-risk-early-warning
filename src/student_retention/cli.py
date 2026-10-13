@@ -10,8 +10,10 @@ from student_retention.logging_config import get_logger
 from student_retention.paths import (
     DATA_RAW_DIR,
     INTERIM_NORMALIZED_DIR,
+    PROCESSED_COHORT_DIR,
     QUALITY_REPORTS_DIR,
 )
+from student_retention.transformation.build_cohort import CohortBuilder
 from student_retention.validation.report_generator import generate_quality_report
 
 logger = get_logger("student_retention.cli")
@@ -52,6 +54,30 @@ def run_clean_and_validate(args: argparse.Namespace) -> int:
         for v in quality_report["all_violations"]:
             print(f"  - {v}")
         return 1
+    return 0
+
+
+def run_build_cohort(args: argparse.Namespace) -> int:
+    """Execute cohort construction pipeline."""
+    logger.info("Executing cohort construction under policy: %s (cutoff: Day %d)", args.policy, args.cutoff)
+    builder = CohortBuilder(
+        cutoff_day=args.cutoff,
+        policy=args.policy,
+        data_dir=args.data_dir,
+    )
+    results = builder.run(save_outputs=not args.no_save, output_dir=args.output_dir)
+    audit = results["audit_report"]
+    reconciliation = audit["reconciliation"]
+    target_dist = audit["target_distribution"]
+
+    print(f"\nCohort constructed under {args.policy.upper()} at Day {args.cutoff}:")
+    print(f"  - Total source records: {reconciliation['total_source_records']:,}")
+    print(f"  - Excluded records:     {reconciliation['total_excluded_records']:,} ({reconciliation['pct_excluded']}%)")
+    print(f"  - Eligible cohort:      {reconciliation['eligible_cohort_records']:,} ({reconciliation['pct_eligible']}%)")
+    print(f"  - Positive cases (1):   {target_dist['positive_cases']:,} ({target_dist['positive_base_rate_pct']}%)")
+    print(f"  - Negative cases (0):   {target_dist['negative_cases']:,}")
+    if "saved_paths" in results:
+        print(f"  - Output saved to:      {results['saved_paths']['cohort_parquet']}")
     return 0
 
 
@@ -102,6 +128,41 @@ def build_parser() -> argparse.ArgumentParser:
         help="Interim table format (default: parquet)",
     )
 
+    # Subcommand: build-cohort
+    cohort_parser = subparsers.add_parser(
+        "build-cohort",
+        help="Construct eligible student cohort and withdrawal target.",
+    )
+    cohort_parser.add_argument(
+        "--policy",
+        choices=["policy_c", "policy_b"],
+        default="policy_c",
+        help="Cohort eligibility policy (default: policy_c)",
+    )
+    cohort_parser.add_argument(
+        "--cutoff",
+        type=int,
+        default=35,
+        help="Prediction cutoff in relative days (default: 35)",
+    )
+    cohort_parser.add_argument(
+        "--data-dir",
+        type=Path,
+        default=INTERIM_NORMALIZED_DIR,
+        help="Directory containing normalized interim tables",
+    )
+    cohort_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=PROCESSED_COHORT_DIR,
+        help="Directory to save cohort datasets (default: data/processed/cohort)",
+    )
+    cohort_parser.add_argument(
+        "--no-save",
+        action="store_true",
+        help="Do not save outputs to disk",
+    )
+
     return parser
 
 
@@ -114,6 +175,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_audit(args)
     elif args.command == "clean-and-validate":
         return run_clean_and_validate(args)
+    elif args.command == "build-cohort":
+        return run_build_cohort(args)
     else:
         parser.print_help()
         return 0

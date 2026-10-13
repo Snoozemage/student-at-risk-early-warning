@@ -1,0 +1,61 @@
+{
+  "dataset_name": "Open University Learning Analytics Dataset (OULAD)",
+  "generated_at_utc": "2026-10-13T11:28:37.274847+00:00",
+  "policy": "policy_c",
+  "prediction_cutoff_relative_days": 35,
+  "reconciliation": {
+    "raw_student_info_records": 2,
+    "raw_student_registration_records": 2,
+    "total_source_records": 2,
+    "total_excluded_records": 0,
+    "pct_excluded": 0.0,
+    "eligible_cohort_records": 2,
+    "pct_eligible": 100.0,
+    "is_reconciled": true
+  },
+  "target_distribution": {
+    "positive_cases": 1,
+    "negative_cases": 1,
+    "positive_base_rate_pct": 50.0,
+    "negative_class_breakdown": {
+      "Pass": 1
+    }
+  },
+  "exclusion_precedence_hierarchy": {
+    "step_1": {
+      "step": 1,
+      "code": "STEP_1",
+      "reason": "N/A",
+      "count": 0,
+      "pct_of_raw": 0.0
+    },
+    "step_2": {
+      "step": 2,
+      "code": "STEP_2",
+      "reason": "N/A",
+      "count": 0,
+      "pct_of_raw": 0.0
+    },
+    "step_3": {
+      "step": 3,
+      "code": "STEP_3",
+      "reason": "N/A",
+      "count": 0,
+      "pct_of_raw": 0.0
+    },
+    "step_4": {
+      "step": 4,
+      "code": "STEP_4",
+      "reason": "N/A",
+      "count": 0,
+      "pct_of_raw": 0.0
+    },
+    "step_5": {
+      "step": 5,
+      "code": "STEP_5",
+      "reason": "N/A",
+      "count": 0,
+      "pct_of_raw": 0.0
+    }
+  }
+}
