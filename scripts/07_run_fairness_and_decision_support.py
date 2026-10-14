@@ -51,6 +51,7 @@ def generate_subgroup_fairness_report(
     output_path: Path,
     queue_audit_df: pd.DataFrame | None = None,
     training_cal_df: pd.DataFrame | None = None,
+    selected_calibration_method: str | None = None,
 ) -> None:
     """Generate comprehensive Markdown report documenting subgroup disparity audits.
 
@@ -58,7 +59,7 @@ def generate_subgroup_fairness_report(
       1. Training-only calibration method selection and provenance.
       2. Demographic sensitivity analysis findings.
       3. Classifier-level subgroup diagnostic (Uncalibrated RF @ fixed threshold).
-      4. Operational support queue subgroup audit (Calibrated RF @ Top-500 capacity).
+      4. Held-out demonstration queue subgroup audit (calibrated RF, enrollment-slot cap).
 
     Dynamically enumerates disparity flags without hard-coded parity claims or unsupported
     interpretations, maintaining strict non-causal observational phrasing.
@@ -76,7 +77,7 @@ def generate_subgroup_fairness_report(
 **Phase:** Phase 7 — Interpretation, Fairness and Decision Support
 **Evaluation Candidate Cohort:** Held-Out Group-Aware Test Cohort (20% sample, N={audit_df['sample_size'].sum() // len(audit_df['protected_attribute'].unique()):,} candidate enrollment records across 2013B, 2013J, 2014B, 2014J)
 **Classifier Diagnostic Policy:** Fixed Decision Threshold $\\theta = {operational_threshold:.2f}$ ({threshold_provenance}) evaluated across all candidate records
-**Operational Queue Policy:** Capped Demonstration Support Queue (Top-500 Enrollment Slots per Presentation, Total N=2,000 across four terms: 2013B, 2013J, 2014B, 2014J) on Isotonic Calibrated Probabilities
+**Queue Evaluation Scope:** Historical held-out demonstration queue, ranked by the calibration method recorded in training-only selection metadata; capacity is measured in course-enrollment slots, not unique students, and does not represent a deployed institutional policy.
 
 ---
 
@@ -111,8 +112,8 @@ To eliminate any risk of test-set leakage or post-hoc method selection, candidat
                 f"{r['brier_score']:.5f} | {r['expected_calibration_error']:.5f} | {r['maximum_calibration_error']:.5f} | {r['max_probability']:.4f} |\n"
             )
 
-        report_text += """
-**Method Selection Evidence:** Isotonic regression was selected based entirely on training-only cross-validation evidence: it achieved the lowest Expected Calibration Error (0.00284 vs 0.00941 for sigmoid and 0.00620 for raw RF), lowest Brier score, and successfully restored separation at the upper tail (maximum probability 0.8857 vs 0.5776 for raw RF and 0.6978 for sigmoid), enabling effective priority-tier assignment at the 0.70 Urgent threshold.
+        report_text += f"""
+**Method Selection Evidence:** The selected method in training-only calibration metadata is **{selected_calibration_method or 'unavailable'}**. The comparison above reports this run's observed training out-of-fold metrics; the selected method is not assumed to be universally optimal.
 """
 
     report_text += f"""
@@ -183,10 +184,10 @@ Across the 6 protected attributes ({len(audit_df)} total evaluated subgroups):
         report_text += f"""
 ---
 
-## 5. Operational Support Queue Subgroup Audit (Calibrated RF @ Top-500 Capacity)
+## 5. Demonstration Support Queue Subgroup Audit (Calibrated RF @ Top-500 Enrollment Slots)
 
-**Binary Decision Evaluated:** Caseload queue inclusion ($\\text{{in\\_support\\_queue}} \\in \\{{0, 1\\}}$) from the candidate cohort (5,414 held-out enrollment records) into the capped demonstration support queue (2,000 slots total, exactly 500 per presentation across 2013B, 2013J, 2014B, and 2014J), ranked by calibrated risk probabilities.
-**Purpose:** Direct audit of the actual decision-support intervention policy that students and academic advisors experience in practice under term capacity limits.
+**Binary Decision Evaluated:** Inclusion in the historical held-out demonstration queue, ranked by calibrated probabilities and capped at up to 500 course-enrollment slots per represented presentation.
+**Purpose:** Retrospective audit of this demonstration allocation rule. It does not establish a deployed policy or a 500-unique-student caseload; duplicate course enrollments require an institutional aggregation decision.
 
 Across the 6 protected attributes ({len(queue_audit_df)} total evaluated subgroups):
 * **Statistically Stable Subgroups ($N \\ge 50$):** {len(q_stable)} subgroups ({len(q_stable) / len(queue_audit_df) * 100:.1f}%).
@@ -194,7 +195,7 @@ Across the 6 protected attributes ({len(queue_audit_df)} total evaluated subgrou
 
 ### Queue-Level Parity Findings & Comparison to Classifier Diagnostics
 
-When evaluated under the actual calibrated queue allocation policy (overall inclusion rate = {queue_audit_df['selected_count'].sum() / queue_audit_df['sample_size'].sum():.2%}):
+In this held-out demonstration queue (overall inclusion rate = {queue_audit_df['selected_count'].sum() / queue_audit_df['sample_size'].sum():.2%}):
 * **Disparate Impact Warnings:** **{len(q_di_warnings)} stable subgroups** exceed the [0.80, 1.25] tolerance band (down from {len(di_warnings)} in the uncalibrated classifier diagnostic).
 * **Elevated False Positive Rate Warnings:** **{len(q_fpr_warnings)} stable subgroups** exceed the 1.50 warning threshold (down from {len(fpr_warnings)} in the uncalibrated classifier diagnostic).
 
@@ -226,7 +227,7 @@ When evaluated under the actual calibrated queue allocation policy (overall incl
         report_text += """
 ### Caseload Capacity Grain & Aggregation Policy Notice
 
-The operational queue allocates capacity at the **course-enrollment grain** (500 slots per presentation across four academic terms: 2013B, 2013J, 2014B, 2014J, totaling 2,000 slots across 1,827 unique students with 173 duplicate slots across terms). As documented in institutional governance policies, a true 500-unique-student operational queue remains unresolved pending university-level approval of a cross-module risk aggregation policy.
+The queue allocates capacity at the **course-enrollment grain** (up to 500 slots per presentation in this held-out demonstration). Duplicate enrollment slots mean the institution's intended 500-case capacity cannot be interpreted as 500 unique students without an approved cross-module risk aggregation policy.
 """
 
     report_text += """
@@ -248,6 +249,7 @@ def generate_decision_support_report(
     capacity_audit_df: pd.DataFrame,
     calibration_diag: dict,
     output_path: Path,
+    selected_calibration_method: str | None = None,
 ) -> None:
     """Generate Markdown report detailing decision support queue composition, calibration, and workflow rules."""
     tier_counts = queue_df["priority_tier"].value_counts()
@@ -258,20 +260,22 @@ def generate_decision_support_report(
     report_text = f"""# Decision Support & Caseload Prioritization Report
 
 **Phase:** Phase 7 — Interpretation, Fairness and Decision Support
-**Output Deliverable:** [`outputs/predictions/student_support_queue.csv`](file:///c:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/outputs/predictions/student_support_queue.csv)
+**Output Deliverable:** [`outputs/predictions/student_support_queue.csv`](../predictions/student_support_queue.csv)
 **Evaluation Candidate Cohort:** Held-Out Group-Aware Test Cohort (5,414 candidate enrollment records across four academic terms: 2013B, 2013J, 2014B, 2014J)
-**Generated Support Queue:** Capped demonstration triage queue (Top-500 enrollment slots per term $\\times$ 4 terms = {total_q:,} total slots across {total_unique:,} unique students)
-**Triage Capacity Limit:** K=500 course-enrollment records per academic term (cross-module advisor caseload)
+**Generated Support Queue:** Historical held-out demonstration queue (up to K=500 enrollment records per presentation; {total_q:,} slots across {total_unique:,} unique students in this run)
+**Demonstration Cap:** K=500 course-enrollment records per presentation. This is not a validated 500-unique-student caseload; cross-module aggregation remains unresolved.
 
 ---
 
-## 1. Caseload Triage Breakdown
+## 1. Proposed Demonstration Triage Settings
 
-| Priority Tier | Operational Definition | Response SLA | Active Cases | Caseload % | Prescribed Action |
+The cutoffs and response targets below are provisional settings used to illustrate a retrospective held-out queue. They are not validated decision thresholds or operational service levels. Retrospective calibration and queue composition do not establish that outreach improves student outcomes; intervention effectiveness requires prospective evaluation.
+
+| Priority Tier | Proposed Demonstration Rule | Proposed Response Target | Demonstration Cases | Caseload % | Example Support Action |
 |---|---|---|---|---|---|
-| **Tier 1 (Urgent)** | Calibrated Prob $\\ge 0.70$ | **3 business days** | {tier_counts.get('Tier 1 (Urgent)', 0):,} | {tier_counts.get('Tier 1 (Urgent)', 0) / total_q:.1%} | Direct personal outreach (phone/1-on-1 email) |
-| **Tier 2 (Watch)** | $0.40 \\le$ Calibrated Prob $< 0.70$ | **7 business days** | {tier_counts.get('Tier 2 (Watch)', 0):,} | {tier_counts.get('Tier 2 (Watch)', 0) / total_q:.1%} | Automated check-in & tutor forum check |
-| **Tier 3 (Standard)** | Calibrated Prob $< 0.40$ | Routine | {tier_counts.get('Tier 3 (Standard)', 0):,} | {tier_counts.get('Tier 3 (Standard)', 0) / total_q:.1%} | Standard course delivery & monitoring |
+| **Tier 1 (Urgent)** | Proposed score $\\ge 0.70$ | Proposed 3 business days | {tier_counts.get('Tier 1 (Urgent)', 0):,} | {tier_counts.get('Tier 1 (Urgent)', 0) / total_q:.1%} | Example: personal outreach for human review |
+| **Tier 2 (Watch)** | Proposed score $0.40 \\le p < 0.70$ | Proposed 7 business days | {tier_counts.get('Tier 2 (Watch)', 0):,} | {tier_counts.get('Tier 2 (Watch)', 0) / total_q:.1%} | Example: supportive check-in for human review |
+| **Tier 3 (Standard)** | Proposed score $< 0.40$ | No target set | {tier_counts.get('Tier 3 (Standard)', 0):,} | {tier_counts.get('Tier 3 (Standard)', 0) / total_q:.1%} | Example: routine course communications |
 
 ---
 
@@ -295,11 +299,11 @@ def generate_decision_support_report(
 
 ## 3. Probability Calibration & Reliability
 
-Model risk probabilities are calibrated using **Isotonic Calibration** fitted strictly on the 80% training partition via 5-fold `GroupKFold` cross-validation:
+Model risk probabilities use **{selected_calibration_method or 'a method unavailable in selection metadata'}** as selected on the training partition via 5-fold `GroupKFold` cross-validation:
 * **Held-Out Test Brier Score:** {calibration_diag.get('brier_score', 'N/A')}
-* **Expected Calibration Error (ECE):** {calibration_diag.get('expected_calibration_error', 'N/A')} (substantial error reduction over uncalibrated RF)
+* **Expected Calibration Error (ECE):** {calibration_diag.get('expected_calibration_error', 'N/A')} on the held-out evaluation data; compare with the raw-model row before interpreting calibration change.
 * **Calibrated Probability Range:** [{calibration_diag.get('min_probability', 0.0):.4f}, {calibration_diag.get('max_probability', 1.0):.4f}] (mean: {calibration_diag.get('mean_probability', 0.0):.4f})
-* **Calibration Artifact:** [`models/baseline/random_forest_calibrated.joblib`](file:///c:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/models/baseline/random_forest_calibrated.joblib)
+* **Calibration Artifact:** [`models/baseline/random_forest_calibrated.joblib`](../../models/baseline/random_forest_calibrated.joblib)
 
 ---
 
@@ -331,7 +335,7 @@ The generated queue delivers structured, pseudonymized context for academic advi
 [Priority Triage Engine (Tier 1 / 2 / 3)]
         │
         ▼
-[Caseload Allocation (Max K=500 per term on unseen cohort)]
+[Held-Out Demonstration Queue (up to K=500 enrollment records per presentation)]
         │
         ▼
 [Advisor Context Review & Behavioral Verification]
@@ -625,9 +629,10 @@ def main():
         capacity_audit_df=cap_audit_df,
         calibration_diag=cal_diag,
         output_path=REPORTS_DIR / "decision_support_recommendations.md",
+        selected_calibration_method=selected_cal_method,
     )
 
-    # 7. Operational Support Queue Subgroup Audit (Actual Calibrated Intervention Policy)
+    # 7. Held-Out Demonstration Queue Subgroup Audit (Calibrated Enrollment-Slot Policy)
     test_eval_queue_df = test_df.copy()
     test_eval_queue_df["calibrated_risk_probability"] = cal_probs
 
@@ -650,6 +655,7 @@ def main():
         output_path=REPORTS_DIR / "subgroup_fairness_report.md",
         queue_audit_df=queue_audit_df,
         training_cal_df=training_cal_df,
+        selected_calibration_method=selected_cal_method,
     )
 
     print("\nPhase 7 Execution Completed Successfully!")

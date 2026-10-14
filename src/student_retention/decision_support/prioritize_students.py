@@ -14,7 +14,6 @@ from student_retention.decision_support.intervention_policy import (
 )
 from student_retention.features.feature_selection import select_primary_features
 from student_retention.logging_config import get_logger
-from student_retention.paths import PREDICTIONS_DIR
 
 logger = get_logger(__name__)
 
@@ -300,10 +299,11 @@ def build_student_support_queue(
 
     queue_df = queue_df[QUEUE_CANONICAL_COLUMNS]
 
-    # Save to disk if requested or default
-    target_path = save_path or (PREDICTIONS_DIR / "student_support_queue.csv")
-    target_path.parent.mkdir(parents=True, exist_ok=True)
-    queue_df.to_csv(target_path, index=False)
-    logger.info("Saved validated student support queue (%d rows) to %s", len(queue_df), target_path)
+    # Save to disk if requested
+    if save_path is not None:
+        target_path = Path(save_path)
+        target_path.parent.mkdir(parents=True, exist_ok=True)
+        queue_df.to_csv(target_path, index=False)
+        logger.info("Saved validated student support queue (%d rows) to %s", len(queue_df), target_path)
 
     return queue_df

@@ -370,6 +370,14 @@ class EDARunner:
         sites_row = get_stat_row("vle_distinct_sites")
         inactivity_row = get_stat_row("days_since_last_vle")
         reg_row = get_stat_row("date_registration")
+        reg_direction = "The group medians are unavailable, so the direction cannot be determined."
+        if reg_row is not None and pd.notna(reg_row.get("retained_median")) and pd.notna(reg_row.get("withdrawn_median")):
+            if reg_row["withdrawn_median"] < reg_row["retained_median"]:
+                reg_direction = "The withdrawn group registered earlier at the median."
+            elif reg_row["withdrawn_median"] > reg_row["retained_median"]:
+                reg_direction = "The withdrawn group registered later at the median."
+            else:
+                reg_direction = "The groups have equal median registration dates."
         prev_attempts_row = get_stat_row("num_of_prev_attempts")
 
         # Assessment pattern metrics from assessment_summary & missed_or
@@ -542,10 +550,9 @@ This exploratory data analysis investigates early behavioral, academic, and temp
   - Net transitions: $\\Delta a = -2, \\Delta b = -2, \\Delta c = +1, \\Delta d = +1$, reducing total missed cases from 3,477 to 3,473 and increasing non-missed cases from 21,225 to 21,227.
 - **Phase 5 Guidance:** Milestone adherence constitutes a major early behavioral signal, but must be paired with indicator variables (`has_assessments_due`) to accommodate curriculum pacing differences.
 
-### Observation 5: Registration Pacing & Commitment Horizon
-- **Empirical Finding:** Students registering well in advance of module commencement demonstrate greater persistence (N = {total:,}).
-- **Lead Time Distribution:** The median registration date for retained students is **{get_stat_val(reg_row, 'retained_median')} days** relative to course start, whereas for withdrawn students it is **{get_stat_val(reg_row, 'withdrawn_median')} days** (Mann-Whitney U $p = {get_stat_val(reg_row, 'p_value', '.2e', '[Not computed]')}$, Cliff's delta = {get_stat_val(reg_row, 'cliffs_delta', '.4f')}).
-- **Late Registration Context:** While the vast majority register prior to Day 0, registering near or after the course start date is associated with higher attrition risk.
+### Observation 5: Registration Timing (Exploratory)
+- **Group Comparison:** Median `date_registration` is **{get_stat_val(reg_row, 'retained_median')} days** for retained and **{get_stat_val(reg_row, 'withdrawn_median')} days** for withdrawn learners relative to Day 0 (Mann-Whitney U $p = {get_stat_val(reg_row, 'p_value', '.2e', '[Not computed]')}$, Cliff's delta = {get_stat_val(reg_row, 'cliffs_delta', '.4f')}). Negative values mean registration before Day 0; more negative values mean earlier registration. The `registration_lead_time_days` feature is `-date_registration`, so positive/larger values also mean earlier registration.
+- **Interpretation Limit:** {reg_direction} The test's p-value alone gives no direction, and this retrospective comparison does not justify risk-directed targeting or establish a causal relationship or cutoff.
 
 ### Observation 6: Missingness and Contextual Demographic Indicators
 - **Missingness Stability:** {imd_significance_text}

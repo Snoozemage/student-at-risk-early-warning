@@ -152,6 +152,33 @@ def test_audit_subgroup_metrics_missing_column_raises():
         audit_subgroup_metrics(df, attribute="gender")
 
 
+def test_audit_subgroup_metrics_preserves_undefined_rates():
+    """Zero denominators remain undefined instead of being reported as measured zero rates."""
+    df = pd.DataFrame(
+        {
+            "group": ["no_positive_predictions"] * 2 + ["all_positive"] * 2,
+            "withdrawn_after_cutoff": [0, 0, 1, 1],
+            "predicted_label": [0, 0, 1, 1],
+            "risk_probability": [0.1, 0.2, 0.8, 0.9],
+        }
+    )
+    audit = audit_subgroup_metrics(
+        df,
+        attribute="group",
+        reference_group="all_positive",
+        min_sample_size=1,
+    ).set_index("subgroup")
+
+    no_pos_pred = audit.loc["no_positive_predictions"]
+    assert pd.isna(no_pos_pred["precision"])
+    assert pd.isna(no_pos_pred["recall"])
+    assert no_pos_pred["false_positive_rate"] == 0.0
+    assert pd.isna(no_pos_pred["false_negative_rate"])
+    all_positive = audit.loc["all_positive"]
+    assert pd.isna(all_positive["false_positive_rate"])
+    assert pd.isna(all_positive["fpr_ratio"])
+
+
 def test_fairness_report_dynamic_enumerates_both_di_and_fpr_warnings(tmp_path):
     """Verify that generate_subgroup_fairness_report explicitly lists both DI and FPR ratio flags."""
     import importlib.util
@@ -258,6 +285,16 @@ def test_fairness_report_dynamic_enumerates_both_di_and_fpr_warnings(tmp_path):
         operational_threshold=0.25,
         threshold_provenance="5-fold GroupKFold CV on 80% train split",
         output_path=report_path,
+        training_cal_df=pd.DataFrame([{
+            "model_configuration": "Random Forest (Sigmoid Calibrated)",
+            "calibration_method": "sigmoid",
+            "evaluation_split": "training_out_of_fold_cv",
+            "brier_score": 0.12,
+            "expected_calibration_error": 0.01,
+            "maximum_calibration_error": 0.04,
+            "max_probability": 0.7,
+        }]),
+        selected_calibration_method="sigmoid",
     )
 
     assert report_path.exists()
@@ -276,6 +313,34 @@ def test_fairness_report_dynamic_enumerates_both_di_and_fpr_warnings(tmp_path):
     # 3. Contains explicit threshold provenance
     assert "Fixed Decision Threshold $\\theta = 0.25$" in report_content
     assert "5-fold GroupKFold CV on 80% train split" in report_content
+    assert "selected method in training-only calibration metadata is **sigmoid**" in report_content
+    assert "Isotonic regression was selected" not in report_content
+
+    decision_report = tmp_path / "decision_report_test.md"
+    mod.generate_decision_support_report(
+        queue_df=pd.DataFrame([{"priority_tier": "Tier 1 (Urgent)", "student_key": "S1"}]),
+        capacity_audit_df=pd.DataFrame(columns=[
+            "code_presentation", "caseload_enrollment_slots", "unique_students_in_queue",
+            "duplicate_slots", "multi_course_students_in_queue", "unresolved_aggregation_status",
+        ]),
+        calibration_diag={"brier_score": 0.12, "expected_calibration_error": 0.01,
+                          "min_probability": 0.1, "max_probability": 0.8, "mean_probability": 0.3},
+        output_path=decision_report,
+        selected_calibration_method="sigmoid",
+    )
+    decision_content = decision_report.read_text(encoding="utf-8")
+    assert "use **sigmoid** as selected" in decision_content
+    assert "Isotonic Calibration** fitted" not in decision_content
+    assert "Historical held-out demonstration queue" in decision_content
+    assert "Demonstration Cap:** K=500 course-enrollment records per presentation" in decision_content
+    assert "cross-module advisor caseload" not in decision_content
+    assert "a true 500-unique-student operational queue remains **unresolved" in decision_content
+    assert "provisional settings" in decision_content
+    assert "not validated decision thresholds or operational service levels" in decision_content
+    assert "intervention effectiveness requires prospective evaluation" in decision_content
+    assert "Proposed Response Target" in decision_content
+    assert "file:" + "///" not in decision_content.lower()
+    assert "../predictions/student_support_queue.csv" in decision_content
 
 
 def test_audit_operational_support_queue_basic():

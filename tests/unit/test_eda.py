@@ -862,7 +862,21 @@ def test_eda_runner_report_fallbacks_and_missing_data(tmp_path: Path):
             "p_value": 1.36e-33,
             "cliffs_delta": -0.1117,
             "cohens_d": -0.1948,
-        }
+        },
+        {
+            "feature": "date_registration",
+            "n_retained": 22410,
+            "n_withdrawn": 4718,
+            "retained_mean": -65.42,
+            "retained_median": -52.0,
+            "retained_iqr": 65.0,
+            "withdrawn_mean": -70.81,
+            "withdrawn_median": -58.0,
+            "withdrawn_iqr": 72.0,
+            "p_value": 1.7156625977313331e-09,
+            "cliffs_delta": -0.0557,
+            "cohens_d": -0.1136,
+        },
     ])
     missed_or_valid = {
         "odds_ratio": 2.80,
@@ -886,6 +900,26 @@ def test_eda_runner_report_fallbacks_and_missing_data(tmp_path: Path):
     assert "Fisher's exact test indicates an unadjusted statistically significant difference ($p = 0.0079$)" in valid_content
     assert "28.3%" in valid_content
     assert "430.2" in valid_content
+    assert "The withdrawn group registered earlier at the median." in valid_content
+    assert "The test's p-value alone gives no direction" in valid_content
+    assert "registering near or after the course start date is associated with higher attrition risk" not in valid_content
+
+    reversed_registration = stat_comparison_valid.copy()
+    reversed_registration.loc[reversed_registration["feature"] == "date_registration", "retained_median"] = -58
+    reversed_registration.loc[reversed_registration["feature"] == "date_registration", "withdrawn_median"] = -52
+    runner._write_eda_report(
+        report_path=report_path,
+        cohort_summary=cohort_summary,
+        presentation_summary=presentation_summary_valid,
+        stat_comparison=reversed_registration,
+        assessment_summary=assessment_summary_empty,
+        missed_or=missed_or_valid,
+        missingness_df=missingness_df_valid,
+        policy_comparison=policy_comparison_empty,
+    )
+    reversed_content = report_path.read_text(encoding="utf-8")
+    assert "The withdrawn group registered later at the median." in reversed_content
+    assert "The withdrawn group registered earlier at the median." not in reversed_content
 
     # Test Case 3: Non-significant missingness test (p >= 0.05) - must not claim groups are balanced
     missingness_df_nonsig = pd.DataFrame([

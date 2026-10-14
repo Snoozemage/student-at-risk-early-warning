@@ -1,6 +1,14 @@
-"""Pytest fixtures for student_retention test suite."""
+import sys
+from pathlib import Path
+
 import pandas as pd
 import pytest
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+if str(PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT))
+if str(PROJECT_ROOT / "src") not in sys.path:
+    sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 
 @pytest.fixture

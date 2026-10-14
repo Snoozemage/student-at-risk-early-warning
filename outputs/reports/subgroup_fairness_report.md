@@ -3,7 +3,7 @@
 **Phase:** Phase 7 — Interpretation, Fairness and Decision Support
 **Evaluation Candidate Cohort:** Held-Out Group-Aware Test Cohort (20% sample, N=5,414 candidate enrollment records across 2013B, 2013J, 2014B, 2014J)
 **Classifier Diagnostic Policy:** Fixed Decision Threshold $\theta = 0.25$ (Derived from 5-fold GroupKFold cross-validation on 80% random train partition (precision >= 0.35)) evaluated across all candidate records
-**Operational Queue Policy:** Capped Demonstration Support Queue (Top-500 Enrollment Slots per Presentation, Total N=2,000 across four terms: 2013B, 2013J, 2014B, 2014J) on Isotonic Calibrated Probabilities
+**Queue Evaluation Scope:** Historical held-out demonstration queue, ranked by the calibration method recorded in training-only selection metadata; capacity is measured in course-enrollment slots, not unique students, and does not represent a deployed institutional policy.
 
 ---
 
@@ -32,7 +32,7 @@ To eliminate any risk of test-set leakage or post-hoc method selection, candidat
 | **Random Forest (Sigmoid Calibrated)** | `sigmoid` | training_out_of_fold_cv | 0.13498 | 0.00941 | 0.04604 | 0.6978 |
 | **Random Forest (Isotonic Calibrated)** | `isotonic` | training_out_of_fold_cv | 0.13480 | 0.00284 | 0.27959 | 0.8857 |
 
-**Method Selection Evidence:** Isotonic regression was selected based entirely on training-only cross-validation evidence: it achieved the lowest Expected Calibration Error (0.00284 vs 0.00941 for sigmoid and 0.00620 for raw RF), lowest Brier score, and successfully restored separation at the upper tail (maximum probability 0.8857 vs 0.5776 for raw RF and 0.6978 for sigmoid), enabling effective priority-tier assignment at the 0.70 Urgent threshold.
+**Method Selection Evidence:** The selected method in training-only calibration metadata is **isotonic**. The comparison above reports this run's observed training out-of-fold metrics; the selected method is not assumed to be universally optimal.
 
 ---
 
@@ -103,10 +103,10 @@ Across the 6 protected attributes (36 total evaluated subgroups):
 
 ---
 
-## 5. Operational Support Queue Subgroup Audit (Calibrated RF @ Top-500 Capacity)
+## 5. Demonstration Support Queue Subgroup Audit (Calibrated RF @ Top-500 Enrollment Slots)
 
-**Binary Decision Evaluated:** Caseload queue inclusion ($\text{in\_support\_queue} \in \{0, 1\}$) from the candidate cohort (5,414 held-out enrollment records) into the capped demonstration support queue (2,000 slots total, exactly 500 per presentation across 2013B, 2013J, 2014B, and 2014J), ranked by calibrated risk probabilities.
-**Purpose:** Direct audit of the actual decision-support intervention policy that students and academic advisors experience in practice under term capacity limits.
+**Binary Decision Evaluated:** Inclusion in the historical held-out demonstration queue, ranked by calibrated probabilities and capped at up to 500 course-enrollment slots per represented presentation.
+**Purpose:** Retrospective audit of this demonstration allocation rule. It does not establish a deployed policy or a 500-unique-student caseload; duplicate course enrollments require an institutional aggregation decision.
 
 Across the 6 protected attributes (36 total evaluated subgroups):
 * **Statistically Stable Subgroups ($N \ge 50$):** 35 subgroups (97.2%).
@@ -114,7 +114,7 @@ Across the 6 protected attributes (36 total evaluated subgroups):
 
 ### Queue-Level Parity Findings & Comparison to Classifier Diagnostics
 
-When evaluated under the actual calibrated queue allocation policy (overall inclusion rate = 36.94%):
+In this held-out demonstration queue (overall inclusion rate = 36.94%):
 * **Disparate Impact Warnings:** **4 stable subgroups** exceed the [0.80, 1.25] tolerance band (down from 14 in the uncalibrated classifier diagnostic).
 * **Elevated False Positive Rate Warnings:** **0 stable subgroups** exceed the 1.50 warning threshold (down from 7 in the uncalibrated classifier diagnostic).
 
@@ -130,7 +130,7 @@ No stable subgroups exhibited false positive rate ratios exceeding the 1.50 warn
 
 ### Caseload Capacity Grain & Aggregation Policy Notice
 
-The operational queue allocates capacity at the **course-enrollment grain** (500 slots per presentation across four academic terms: 2013B, 2013J, 2014B, 2014J, totaling 2,000 slots across 1,827 unique students with 173 duplicate slots across terms). As documented in institutional governance policies, a true 500-unique-student operational queue remains unresolved pending university-level approval of a cross-module risk aggregation policy.
+The queue allocates capacity at the **course-enrollment grain** (up to 500 slots per presentation in this held-out demonstration). Duplicate enrollment slots mean the institution's intended 500-case capacity cannot be interpreted as 500 unique students without an approved cross-module risk aggregation policy.
 
 ---
 

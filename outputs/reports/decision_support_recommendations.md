@@ -1,20 +1,22 @@
 # Decision Support & Caseload Prioritization Report
 
 **Phase:** Phase 7 — Interpretation, Fairness and Decision Support
-**Output Deliverable:** [`outputs/predictions/student_support_queue.csv`](file:///c:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/outputs/predictions/student_support_queue.csv)
+**Output Deliverable:** [`outputs/predictions/student_support_queue.csv`](../predictions/student_support_queue.csv)
 **Evaluation Candidate Cohort:** Held-Out Group-Aware Test Cohort (5,414 candidate enrollment records across four academic terms: 2013B, 2013J, 2014B, 2014J)
-**Generated Support Queue:** Capped demonstration triage queue (Top-500 enrollment slots per term $\times$ 4 terms = 2,000 total slots across 1,827 unique students)
-**Triage Capacity Limit:** K=500 course-enrollment records per academic term (cross-module advisor caseload)
+**Generated Support Queue:** Historical held-out demonstration queue (up to K=500 enrollment records per presentation; 2,000 slots across 1,827 unique students in this run)
+**Demonstration Cap:** K=500 course-enrollment records per presentation. This is not a validated 500-unique-student caseload; cross-module aggregation remains unresolved.
 
 ---
 
-## 1. Caseload Triage Breakdown
+## 1. Proposed Demonstration Triage Settings
 
-| Priority Tier | Operational Definition | Response SLA | Active Cases | Caseload % | Prescribed Action |
+The cutoffs and response targets below are provisional settings used to illustrate a retrospective held-out queue. They are not validated decision thresholds or operational service levels. Retrospective calibration and queue composition do not establish that outreach improves student outcomes; intervention effectiveness requires prospective evaluation.
+
+| Priority Tier | Proposed Demonstration Rule | Proposed Response Target | Demonstration Cases | Caseload % | Example Support Action |
 |---|---|---|---|---|---|
-| **Tier 1 (Urgent)** | Calibrated Prob $\ge 0.70$ | **3 business days** | 2 | 0.1% | Direct personal outreach (phone/1-on-1 email) |
-| **Tier 2 (Watch)** | $0.40 \le$ Calibrated Prob $< 0.70$ | **7 business days** | 167 | 8.3% | Automated check-in & tutor forum check |
-| **Tier 3 (Standard)** | Calibrated Prob $< 0.40$ | Routine | 1,831 | 91.5% | Standard course delivery & monitoring |
+| **Tier 1 (Urgent)** | Proposed score $\ge 0.70$ | Proposed 3 business days | 2 | 0.1% | Example: personal outreach for human review |
+| **Tier 2 (Watch)** | Proposed score $0.40 \le p < 0.70$ | Proposed 7 business days | 167 | 8.3% | Example: supportive check-in for human review |
+| **Tier 3 (Standard)** | Proposed score $< 0.40$ | No target set | 1,831 | 91.5% | Example: routine course communications |
 
 ---
 
@@ -38,11 +40,11 @@
 
 ## 3. Probability Calibration & Reliability
 
-Model risk probabilities are calibrated using **Isotonic Calibration** fitted strictly on the 80% training partition via 5-fold `GroupKFold` cross-validation:
+Model risk probabilities use **isotonic** as selected on the training partition via 5-fold `GroupKFold` cross-validation:
 * **Held-Out Test Brier Score:** 0.13135
-* **Expected Calibration Error (ECE):** 0.00734 (substantial error reduction over uncalibrated RF)
+* **Expected Calibration Error (ECE):** 0.00734 on the held-out evaluation data; compare with the raw-model row before interpreting calibration change.
 * **Calibrated Probability Range:** [0.0000, 0.7924] (mean: 0.1731)
-* **Calibration Artifact:** [`models/baseline/random_forest_calibrated.joblib`](file:///c:/Users/dangnguyen/Repo/project_for_offer/student-at-risk-early-warning/models/baseline/random_forest_calibrated.joblib)
+* **Calibration Artifact:** [`models/baseline/random_forest_calibrated.joblib`](../../models/baseline/random_forest_calibrated.joblib)
 
 ---
 
@@ -74,7 +76,7 @@ The generated queue delivers structured, pseudonymized context for academic advi
 [Priority Triage Engine (Tier 1 / 2 / 3)]
         │
         ▼
-[Caseload Allocation (Max K=500 per term on unseen cohort)]
+[Held-Out Demonstration Queue (up to K=500 enrollment records per presentation)]
         │
         ▼
 [Advisor Context Review & Behavioral Verification]

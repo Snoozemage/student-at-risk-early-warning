@@ -51,10 +51,9 @@ This exploratory data analysis investigates early behavioral, academic, and temp
   - Net transitions: $\Delta a = -2, \Delta b = -2, \Delta c = +1, \Delta d = +1$, reducing total missed cases from 3,477 to 3,473 and increasing non-missed cases from 21,225 to 21,227.
 - **Phase 5 Guidance:** Milestone adherence constitutes a major early behavioral signal, but must be paired with indicator variables (`has_assessments_due`) to accommodate curriculum pacing differences.
 
-### Observation 5: Registration Pacing & Commitment Horizon
-- **Empirical Finding:** Students registering well in advance of module commencement demonstrate greater persistence (N = 27,128).
-- **Lead Time Distribution:** The median registration date for retained students is **-52.0 days** relative to course start, whereas for withdrawn students it is **-58.0 days** (Mann-Whitney U $p = 1.72e-09$, Cliff's delta = -0.0557).
-- **Late Registration Context:** While the vast majority register prior to Day 0, registering near or after the course start date is associated with higher attrition risk.
+### Observation 5: Registration Timing (Exploratory)
+- **Group Comparison:** Median `date_registration` is **-52.0 days** for retained and **-58.0 days** for withdrawn learners relative to Day 0 (Mann-Whitney U $p = 1.72e-09$, Cliff's delta = -0.0557). Negative values mean registration before Day 0; more negative values mean earlier registration. The `registration_lead_time_days` feature is `-date_registration`, so positive/larger values also mean earlier registration.
+- **Interpretation Limit:** The withdrawn group registered earlier at the median. The test's p-value alone gives no direction, and this retrospective comparison does not justify risk-directed targeting or establish a causal relationship or cutoff.
 
 ### Observation 6: Missingness and Contextual Demographic Indicators
 - **Missingness Stability:** `imd_band` missingness occurs in 3.90% of retained students vs 3.09% of withdrawn students. Fisher's exact test indicates an unadjusted statistically significant difference ($p = 0.0079$). However, the absolute delta is small (-0.81 percentage points; 3.90% in retained vs 3.09% in withdrawn), indicating a negligible practical effect size rather than substantial selective attrition bias.

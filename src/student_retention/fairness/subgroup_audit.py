@@ -102,10 +102,12 @@ def audit_subgroup_metrics(
         fn = int(np.sum((y_true == 1) & (y_pred == 0)))
 
         # Rates
-        precision = float(tp / (tp + fp)) if (tp + fp) > 0 else 0.0
-        recall = float(tp / (tp + fn)) if (tp + fn) > 0 else 0.0
-        fpr = float(fp / (fp + tn)) if (fp + tn) > 0 else 0.0
-        fnr = float(fn / (fn + tp)) if (fn + tp) > 0 else 0.0
+        # Keep undefined rates missing when their denominator is zero. A zero
+        # value would assert a measured perfect rate and can hide subgroup gaps.
+        precision = float(tp / (tp + fp)) if (tp + fp) > 0 else np.nan
+        recall = float(tp / (tp + fn)) if (tp + fn) > 0 else np.nan
+        fpr = float(fp / (fp + tn)) if (fp + tn) > 0 else np.nan
+        fnr = float(fn / (fn + tp)) if (fn + tp) > 0 else np.nan
 
         # Mean predicted risk
         mean_prob = (
