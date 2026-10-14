@@ -1,0 +1,37 @@
+protected_attribute,subgroup,sample_size,is_statistically_stable,disparate_impact_ratio_baseline,fpr_ratio_baseline,selection_rate_baseline,recall_baseline,fairness_warning_flag_baseline,disparate_impact_ratio_demo,fpr_ratio_demo,selection_rate_demo,recall_demo,fairness_warning_flag_demo,delta_disparate_impact,delta_fpr_ratio,delta_selection_rate
+gender,F,2505,True,0.6163,0.5701,0.1301,0.277,disparate_impact_warning,0.6403,0.5933,0.1257,0.2819,disparate_impact_warning,0.024,0.0232,-0.0044
+gender,M,2909,True,1.0,1.0,0.2111,0.3685,within_tolerance,1.0,1.0,0.1963,0.3665,within_tolerance,0.0,0.0,-0.0148
+age_band,0-35,3720,True,1.0,1.0,0.1849,0.3438,within_tolerance,1.0,1.0,0.1723,0.3391,within_tolerance,0.0,0.0,-0.0126
+age_band,35-55,1659,True,0.8118,0.8087,0.1501,0.29,within_tolerance,0.8503,0.8397,0.1465,0.3048,within_tolerance,0.0385,0.031,-0.0036
+age_band,55<=,35,False,0.4635,0.4241,0.0857,0.25,small_sample_warning_N_lt_50,0.3314,0.2342,0.0571,0.25,small_sample_warning_N_lt_50,-0.1321,-0.1899,-0.0286
+disability,N,4918,True,1.0,1.0,0.1692,0.3275,within_tolerance,1.0,1.0,0.1452,0.3014,within_tolerance,0.0,0.0,-0.024
+disability,Y,496,True,1.2866,1.3572,0.2177,0.3271,disparate_impact_warning,2.3884,2.5772,0.3468,0.5327,disparate_impact_warning; elevated_fpr_ratio_warning,1.1018,1.22,0.1291
+imd_band,0-10%,552,True,1.0339,1.0289,0.192,0.2909,within_tolerance,1.2031,1.1604,0.1884,0.3091,within_tolerance,0.1692,0.1315,-0.0036
+imd_band,10-20,541,True,0.9456,0.8371,0.1756,0.3656,within_tolerance,1.0268,0.9158,0.1608,0.3333,within_tolerance,0.0812,0.0787,-0.0148
+imd_band,20-30%,570,True,1.0582,0.8992,0.1965,0.4018,within_tolerance,1.2548,0.9919,0.1965,0.4464,disparate_impact_warning,0.1966,0.0927,0.0
+imd_band,30-40%,589,True,0.9693,0.9908,0.18,0.2667,within_tolerance,1.0843,1.0593,0.1698,0.2857,within_tolerance,0.115,0.0685,-0.0102
+imd_band,40-50%,545,True,0.9483,0.8488,0.1761,0.3542,within_tolerance,1.0664,0.9626,0.167,0.3333,within_tolerance,0.1181,0.1138,-0.0091
+imd_band,50-60%,539,True,1.0291,0.9742,0.1911,0.3516,within_tolerance,1.1373,1.0469,0.1781,0.3516,within_tolerance,0.1082,0.0727,-0.013
+imd_band,60-70%,473,True,0.7857,0.63,0.1459,0.3836,disparate_impact_warning,0.9719,0.7875,0.1522,0.3973,within_tolerance,0.1862,0.1575,0.0063
+imd_band,70-80%,481,True,0.8061,0.7443,0.1497,0.35,within_tolerance,0.8499,0.7656,0.1331,0.3333,within_tolerance,0.0438,0.0213,-0.0166
+imd_band,80-90%,460,True,0.7491,0.7959,0.1391,0.1892,disparate_impact_warning,0.7912,0.8352,0.1239,0.1757,disparate_impact_warning,0.0421,0.0393,-0.0152
+imd_band,90-100%,447,True,1.0,1.0,0.1857,0.3182,within_tolerance,1.0,1.0,0.1566,0.2727,within_tolerance,0.0,0.0,-0.0291
+imd_band,Missing,217,True,0.8438,0.8218,0.1567,0.3,within_tolerance,0.9713,0.9011,0.1521,0.3333,within_tolerance,0.1275,0.0793,-0.0046
+highest_education,A Level or Equivalent,2342,True,1.0,1.0,0.1759,0.3239,within_tolerance,1.0,1.0,0.1516,0.2845,within_tolerance,0.0,0.0,-0.0243
+highest_education,HE Qualification,826,True,0.9636,0.9572,0.1695,0.3363,within_tolerance,0.9584,0.9437,0.1453,0.3009,within_tolerance,-0.0052,-0.0135,-0.0242
+highest_education,Lower Than A Level,2137,True,0.9738,0.8997,0.1713,0.3214,within_tolerance,1.2038,1.0751,0.1825,0.3667,within_tolerance,0.23,0.1754,0.0112
+highest_education,No Formal quals,57,True,1.3962,0.9559,0.2456,0.5333,disparate_impact_warning,1.5046,0.9311,0.2281,0.5333,disparate_impact_warning,0.1084,-0.0248,-0.0175
+highest_education,Post Graduate Qualification,52,True,0.8744,0.8916,0.1538,0.2857,within_tolerance,1.0145,1.043,0.1538,0.2857,within_tolerance,0.1401,0.1514,0.0
+region,East Anglian Region,560,True,1.1859,1.3267,0.1518,0.297,within_tolerance,1.0461,1.0671,0.1339,0.2871,within_tolerance,-0.1398,-0.2596,-0.0179
+region,East Midlands Region,355,True,1.1883,1.3987,0.1521,0.2742,within_tolerance,1.1,1.2354,0.1408,0.2581,within_tolerance,-0.0883,-0.1633,-0.0113
+region,Ireland,203,True,1.2312,1.3178,0.1576,0.3429,within_tolerance,1.1164,1.1406,0.1429,0.3143,within_tolerance,-0.1148,-0.1772,-0.0147
+region,London Region,526,True,1.4555,1.6822,0.1863,0.3647,disparate_impact_warning; elevated_fpr_ratio_warning,1.3516,1.4973,0.173,0.3412,disparate_impact_warning,-0.1039,-0.1849,-0.0133
+region,North Region,314,True,1.3188,1.4219,0.1688,0.3509,disparate_impact_warning,1.3688,1.4089,0.1752,0.3684,disparate_impact_warning,0.05,-0.013,0.0064
+region,North Western Region,463,True,1.5187,1.8605,0.1944,0.3171,disparate_impact_warning; elevated_fpr_ratio_warning,1.5187,1.8168,0.1944,0.3049,disparate_impact_warning; elevated_fpr_ratio_warning,0.0,-0.0437,0.0
+region,Scotland,636,True,1.732,2.0111,0.2217,0.4071,disparate_impact_warning; elevated_fpr_ratio_warning,1.6336,1.853,0.2091,0.3717,disparate_impact_warning; elevated_fpr_ratio_warning,-0.0984,-0.1581,-0.0126
+region,South East Region,328,True,1.0,1.0,0.128,0.3333,within_tolerance,1.0,1.0,0.128,0.3137,within_tolerance,0.0,0.0,0.0
+region,South Region,510,True,1.2711,1.5637,0.1627,0.2821,disparate_impact_warning; elevated_fpr_ratio_warning,1.1797,1.3067,0.151,0.3077,within_tolerance,-0.0914,-0.257,-0.0117
+region,South West Region,405,True,1.2922,1.6467,0.1654,0.2581,disparate_impact_warning; elevated_fpr_ratio_warning,1.3117,1.4899,0.1679,0.3226,disparate_impact_warning,0.0195,-0.1568,0.0025
+region,Wales,391,True,1.4188,1.402,0.1816,0.4133,disparate_impact_warning,1.3789,1.1459,0.1765,0.4667,disparate_impact_warning,-0.0399,-0.2561,-0.0051
+region,West Midlands Region,429,True,1.3297,1.7342,0.1702,0.2462,disparate_impact_warning; elevated_fpr_ratio_warning,1.1477,1.3461,0.1469,0.2615,within_tolerance,-0.182,-0.3881,-0.0233
+region,Yorkshire Region,294,True,1.3555,1.639,0.1735,0.3182,disparate_impact_warning; elevated_fpr_ratio_warning,1.1695,1.278,0.1497,0.3182,within_tolerance,-0.186,-0.361,-0.0238

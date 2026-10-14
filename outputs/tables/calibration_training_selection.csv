@@ -1,0 +1,4 @@
+model_configuration,calibration_method,evaluation_split,brier_score,expected_calibration_error,maximum_calibration_error,min_probability,max_probability,mean_probability
+Random Forest (Raw Probabilities),none,training_out_of_fold_cv,0.13494,0.0062,0.09893,0.026,0.5776,0.1753
+Random Forest (Sigmoid Calibrated),sigmoid,training_out_of_fold_cv,0.13498,0.00941,0.04604,0.067,0.6978,0.1754
+Random Forest (Isotonic Calibrated),isotonic,training_out_of_fold_cv,0.1348,0.00284,0.27959,0.0,0.8857,0.1753

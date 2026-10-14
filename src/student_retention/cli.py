@@ -13,6 +13,7 @@ from student_retention.paths import (
     FIGURES_DIR,
     INTERIM_NORMALIZED_DIR,
     MODELS_BASELINE_DIR,
+    PREDICTIONS_DIR,
     PROCESSED_COHORT_DIR,
     PROCESSED_FEATURES_DIR,
     QUALITY_REPORTS_DIR,
@@ -194,6 +195,149 @@ def run_evaluate_models(args: argparse.Namespace) -> int:
 
     generate_evaluation_figures(test_df, models, args.figures_dir)
     print(f"\nEvaluation figures successfully exported to: {args.figures_dir}")
+    return 0
+
+
+def run_audit_fairness(args: argparse.Namespace) -> int:
+    """Execute subgroup fairness audit and demographic sensitivity analysis."""
+    import pandas as pd
+
+    from student_retention.fairness.subgroup_audit import (
+        audit_all_protected_attributes,
+        run_demographic_sensitivity_experiment,
+    )
+    from student_retention.features.feature_selection import select_primary_features
+    from student_retention.modeling.predict import (
+        load_model,
+        load_operational_threshold,
+    )
+    from student_retention.modeling.splits import split_by_student_group
+
+    logger.info("Executing Phase 7 Subgroup Fairness Audit on %s", args.features_path)
+    if not args.features_path.exists():
+        logger.error("Features not found at %s", args.features_path)
+        return 1
+
+    df = pd.read_parquet(args.features_path)
+    model_path = args.models_dir / "random_forest.joblib"
+    if not model_path.exists():
+        logger.error("Model not found at %s", model_path)
+        return 1
+
+    model = load_model(model_path)
+    threshold = (
+        args.threshold
+        if args.threshold is not None
+        else load_operational_threshold("random_forest", summary_path=args.output_dir / "model_training_summary.json" if (args.output_dir / "model_training_summary.json").exists() else None)
+    )
+
+    _, test_df = split_by_student_group(df, test_size=0.20, random_state=42)
+    clean_test_x = select_primary_features(test_df, include_target=False, include_identifiers=False)
+    test_probs = model.predict_proba(clean_test_x)[:, 1]
+    test_preds = (test_probs >= threshold).astype(int)
+
+    test_eval_df = test_df.copy()
+    test_eval_df["predicted_label"] = test_preds
+    test_eval_df["risk_probability"] = test_probs
+
+    audit_df = audit_all_protected_attributes(
+        df=test_eval_df,
+        target_col="withdrawn_after_cutoff",
+        pred_col="predicted_label",
+        prob_col="risk_probability",
+    )
+    args.output_dir.mkdir(parents=True, exist_ok=True)
+    audit_path = args.output_dir / "subgroup_fairness_audit.csv"
+    audit_df.to_csv(audit_path, index=False)
+
+    print("\nSubgroup Fairness Audit Completed Successfully!")
+    print(f"  - Decision Threshold: {threshold:.4f} (from training metadata)")
+    print(f"  - Evaluated Subgroups: {len(audit_df)}")
+    print(f"  - Audit Report CSV:   {audit_path}")
+
+    if args.run_sensitivity:
+        print("\nRunning Demographic Sensitivity Experiment...")
+        sensitivity = run_demographic_sensitivity_experiment(
+            feature_df=df,
+            test_size=0.20,
+            random_state=42,
+            operational_threshold=threshold,
+        )
+        comp_path = args.output_dir / "demographic_sensitivity_comparison.csv"
+        sensitivity["model_comparison"].to_csv(comp_path, index=False)
+        print(f"  - Sensitivity Table:  {comp_path}")
+        print("\nSensitivity Comparison:")
+        print(sensitivity["model_comparison"].to_string(index=False))
+
+    return 0
+
+
+def run_generate_support_queue(args: argparse.Namespace) -> int:
+    """Generate student support triage queue for academic advising."""
+    import pandas as pd
+
+    from student_retention.decision_support.prioritize_students import (
+        audit_support_queue_capacity,
+        build_student_support_queue,
+    )
+    from student_retention.modeling.predict import load_model
+    from student_retention.modeling.splits import split_by_student_group
+
+    logger.info("Generating student support triage queue from %s", args.features_path)
+    if not args.features_path.exists():
+        logger.error("Features not found at %s", args.features_path)
+        return 1
+
+    df = pd.read_parquet(args.features_path)
+
+    # Prefer calibrated model artifact if present
+    cal_path = args.models_dir / "random_forest_calibrated.joblib"
+    base_path = args.models_dir / "random_forest.joblib"
+    if cal_path.exists():
+        model_path = cal_path
+        logger.info("Using calibrated model artifact from %s", cal_path)
+    elif base_path.exists():
+        model_path = base_path
+        logger.info("Using baseline model artifact from %s", base_path)
+    else:
+        logger.error("No model found in %s", args.models_dir)
+        return 1
+
+    model = load_model(model_path)
+
+    # In accordance with leakage-free evaluation, default to held-out test cohort
+    if getattr(args, "full_cohort", False):
+        scoring_df = df
+        cohort_label = "full cohort retrospective"
+    else:
+        _, scoring_df = split_by_student_group(df, test_size=0.20, random_state=42)
+        cohort_label = "held-out test cohort demonstration"
+
+    logger.info("Scoring %s (N=%d records)...", cohort_label, len(scoring_df))
+
+    queue_df = build_student_support_queue(
+        feature_df=scoring_df,
+        model=model,
+        urgent_threshold=args.urgent_threshold,
+        watch_threshold=args.watch_threshold,
+        capacity_k=args.capacity,
+        save_path=args.output_path,
+    )
+
+    cap_audit = audit_support_queue_capacity(queue_df)
+    cap_path = args.output_path.parent / "support_queue_capacity_audit.csv"
+    cap_audit.to_csv(cap_path, index=False)
+
+    print("\nDecision Support Caseload Queue Generated Successfully!")
+    print(f"  - Evaluation Cohort:       {cohort_label} (N={len(scoring_df):,})")
+    print(f"  - Total Queue Records:     {len(queue_df):,}")
+    print(f"  - Unique Students:         {queue_df['student_key'].nunique():,}")
+    print(f"  - Duplicate Slots:         {len(queue_df) - queue_df['student_key'].nunique():,}")
+    print(f"  - Urgent (Tier 1) Cases:   {int((queue_df['priority_tier'] == 'Tier 1 (Urgent)').sum()):,}")
+    print(f"  - Watch (Tier 2) Cases:    {int((queue_df['priority_tier'] == 'Tier 2 (Watch)').sum()):,}")
+    print(f"  - Standard (Tier 3) Cases: {int((queue_df['priority_tier'] == 'Tier 3 (Standard)').sum()):,}")
+    print(f"  - Output CSV Destination:  {args.output_path}")
+    print(f"  - Capacity Audit CSV:      {cap_path}")
     return 0
 
 
@@ -399,6 +543,90 @@ def build_parser() -> argparse.ArgumentParser:
         help="Directory to save generated figures (default: outputs/figures)",
     )
 
+    # Subcommand: audit-fairness
+    fairness_parser = subparsers.add_parser(
+        "audit-fairness",
+        help="Audit model performance and error-rate parity across protected demographic subgroups.",
+    )
+    fairness_parser.add_argument(
+        "--features-path",
+        type=Path,
+        default=PROCESSED_FEATURES_DIR / "feature_matrix_policy_c.parquet",
+        help="Path to feature matrix Parquet (default: data/processed/features/feature_matrix_policy_c.parquet)",
+    )
+    fairness_parser.add_argument(
+        "--models-dir",
+        type=Path,
+        default=MODELS_BASELINE_DIR,
+        help="Directory containing trained model artifacts (default: models/baseline)",
+    )
+    fairness_parser.add_argument(
+        "--output-dir",
+        type=Path,
+        default=TABLES_DIR,
+        help="Directory to save audit tables (default: outputs/tables)",
+    )
+    fairness_parser.add_argument(
+        "--threshold",
+        type=float,
+        default=None,
+        help="Operational decision threshold for binary prediction evaluation (default: resolved from model_training_summary.json)",
+    )
+    fairness_parser.add_argument(
+        "--run-sensitivity",
+        action="store_true",
+        default=True,
+        help="Run secondary demographic sensitivity experiment (default: True)",
+    )
+
+    # Subcommand: generate-support-queue
+    queue_parser = subparsers.add_parser(
+        "generate-support-queue",
+        help="Generate student support triage queue for academic advising.",
+    )
+    queue_parser.add_argument(
+        "--features-path",
+        type=Path,
+        default=PROCESSED_FEATURES_DIR / "feature_matrix_policy_c.parquet",
+        help="Path to feature matrix Parquet (default: data/processed/features/feature_matrix_policy_c.parquet)",
+    )
+    queue_parser.add_argument(
+        "--models-dir",
+        type=Path,
+        default=MODELS_BASELINE_DIR,
+        help="Directory containing trained model artifacts (default: models/baseline)",
+    )
+    queue_parser.add_argument(
+        "--output-path",
+        type=Path,
+        default=PREDICTIONS_DIR / "student_support_queue.csv",
+        help="Destination path for output queue CSV (default: outputs/predictions/student_support_queue.csv)",
+    )
+    queue_parser.add_argument(
+        "--urgent-threshold",
+        type=float,
+        default=0.70,
+        help="Cutoff probability for Tier 1 (Urgent) triage (default: 0.70)",
+    )
+    queue_parser.add_argument(
+        "--watch-threshold",
+        type=float,
+        default=0.40,
+        help="Cutoff probability for Tier 2 (Watch) triage (default: 0.40)",
+    )
+    queue_parser.add_argument(
+        "--capacity",
+        type=int,
+        default=500,
+        help="Maximum advisor capacity limit per presentation (default: 500)",
+    )
+    queue_parser.add_argument(
+        "--full-cohort",
+        action="store_true",
+        default=False,
+        help="Generate queue on full cohort retrospective instead of default held-out test cohort (default: False)",
+    )
+
     return parser
 
 
@@ -421,6 +649,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         return run_train_models(args)
     elif args.command == "evaluate-models":
         return run_evaluate_models(args)
+    elif args.command == "audit-fairness":
+        return run_audit_fairness(args)
+    elif args.command == "generate-support-queue":
+        return run_generate_support_queue(args)
     else:
         parser.print_help()
         return 0

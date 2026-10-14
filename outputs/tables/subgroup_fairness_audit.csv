@@ -1,0 +1,37 @@
+audit_scope,decision_policy,protected_attribute,subgroup,is_reference_group,sample_size,sample_share,positives_count,base_rate,selected_count,selection_rate,true_positives,false_positives,true_negatives,false_negatives,precision,recall,false_positive_rate,false_negative_rate,mean_predicted_risk,is_statistically_stable,disparate_impact_ratio,fpr_ratio,fairness_warning_flag
+classifier_level,fixed_threshold_0.25,gender,F,False,2505,0.4627,408,0.1629,326,0.1301,113,213,1884,295,0.3466,0.277,0.1016,0.723,0.157,True,0.6163,0.5701,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,gender,M,True,2909,0.5373,502,0.1726,614,0.2111,185,429,1978,317,0.3013,0.3685,0.1782,0.6315,0.1885,True,1.0,1.0,within_tolerance
+classifier_level,fixed_threshold_0.25,age_band,0-35,True,3720,0.6871,637,0.1712,688,0.1849,219,469,2614,418,0.3183,0.3438,0.1521,0.6562,0.1796,True,1.0,1.0,within_tolerance
+classifier_level,fixed_threshold_0.25,age_band,35-55,False,1659,0.3064,269,0.1621,249,0.1501,78,171,1219,191,0.3133,0.29,0.123,0.71,0.1617,True,0.8118,0.8087,within_tolerance
+classifier_level,fixed_threshold_0.25,age_band,55<=,False,35,0.0065,4,0.1143,3,0.0857,1,2,29,3,0.3333,0.25,0.0645,0.75,0.1511,False,0.4635,0.4241,small_sample_warning_N_lt_50
+classifier_level,fixed_threshold_0.25,disability,N,True,4918,0.9084,803,0.1633,832,0.1692,263,569,3546,540,0.3161,0.3275,0.1383,0.6725,0.1733,True,1.0,1.0,within_tolerance
+classifier_level,fixed_threshold_0.25,disability,Y,False,496,0.0916,107,0.2157,108,0.2177,35,73,316,72,0.3241,0.3271,0.1877,0.6729,0.1803,True,1.2866,1.3572,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,imd_band,0-10%,False,552,0.102,110,0.1993,106,0.192,32,74,368,78,0.3019,0.2909,0.1674,0.7091,0.1799,True,1.0339,1.0289,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,10-20,False,541,0.0999,93,0.1719,95,0.1756,34,61,387,59,0.3579,0.3656,0.1362,0.6344,0.175,True,0.9456,0.8371,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,20-30%,False,570,0.1053,112,0.1965,112,0.1965,45,67,391,67,0.4018,0.4018,0.1463,0.5982,0.1795,True,1.0582,0.8992,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,30-40%,False,589,0.1088,105,0.1783,106,0.18,28,78,406,77,0.2642,0.2667,0.1612,0.7333,0.1759,True,0.9693,0.9908,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,40-50%,False,545,0.1007,96,0.1761,96,0.1761,34,62,387,62,0.3542,0.3542,0.1381,0.6458,0.1712,True,0.9483,0.8488,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,50-60%,False,539,0.0996,91,0.1688,103,0.1911,32,71,377,59,0.3107,0.3516,0.1585,0.6484,0.1777,True,1.0291,0.9742,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,60-70%,False,473,0.0874,73,0.1543,69,0.1459,28,41,359,45,0.4058,0.3836,0.1025,0.6164,0.1675,True,0.7857,0.63,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,imd_band,70-80%,False,481,0.0888,60,0.1247,72,0.1497,21,51,370,39,0.2917,0.35,0.1211,0.65,0.1642,True,0.8061,0.7443,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,80-90%,False,460,0.085,74,0.1609,64,0.1391,14,50,336,60,0.2188,0.1892,0.1295,0.8108,0.17,True,0.7491,0.7959,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,imd_band,90-100%,True,447,0.0826,66,0.1477,83,0.1857,21,62,319,45,0.253,0.3182,0.1627,0.6818,0.1754,True,1.0,1.0,within_tolerance
+classifier_level,fixed_threshold_0.25,imd_band,Missing,False,217,0.0401,30,0.1382,34,0.1567,9,25,162,21,0.2647,0.3,0.1337,0.7,0.1748,True,0.8438,0.8218,within_tolerance
+classifier_level,fixed_threshold_0.25,highest_education,A Level or Equivalent,True,2342,0.4326,355,0.1516,412,0.1759,115,297,1690,240,0.2791,0.3239,0.1495,0.6761,0.1775,True,1.0,1.0,within_tolerance
+classifier_level,fixed_threshold_0.25,highest_education,HE Qualification,False,826,0.1526,113,0.1368,140,0.1695,38,102,611,75,0.2714,0.3363,0.1431,0.6637,0.1749,True,0.9636,0.9572,within_tolerance
+classifier_level,fixed_threshold_0.25,highest_education,Lower Than A Level,False,2137,0.3947,420,0.1965,366,0.1713,135,231,1486,285,0.3689,0.3214,0.1345,0.6786,0.1691,True,0.9738,0.8997,within_tolerance
+classifier_level,fixed_threshold_0.25,highest_education,No Formal quals,False,57,0.0105,15,0.2632,14,0.2456,8,6,36,7,0.5714,0.5333,0.1429,0.4667,0.1868,True,1.3962,0.9559,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,highest_education,Post Graduate Qualification,False,52,0.0096,7,0.1346,8,0.1538,2,6,39,5,0.25,0.2857,0.1333,0.7143,0.1826,True,0.8744,0.8916,within_tolerance
+classifier_level,fixed_threshold_0.25,region,East Anglian Region,False,560,0.1034,101,0.1804,85,0.1518,30,55,404,71,0.3529,0.297,0.1198,0.703,0.1651,True,1.1859,1.3267,within_tolerance
+classifier_level,fixed_threshold_0.25,region,East Midlands Region,False,355,0.0656,62,0.1746,54,0.1521,17,37,256,45,0.3148,0.2742,0.1263,0.7258,0.1662,True,1.1883,1.3987,within_tolerance
+classifier_level,fixed_threshold_0.25,region,Ireland,False,203,0.0375,35,0.1724,32,0.1576,12,20,148,23,0.375,0.3429,0.119,0.6571,0.176,True,1.2312,1.3178,within_tolerance
+classifier_level,fixed_threshold_0.25,region,London Region,False,526,0.0972,85,0.1616,98,0.1863,31,67,374,54,0.3163,0.3647,0.1519,0.6353,0.177,True,1.4555,1.6822,disparate_impact_warning; elevated_fpr_ratio_warning
+classifier_level,fixed_threshold_0.25,region,North Region,False,314,0.058,57,0.1815,53,0.1688,20,33,224,37,0.3774,0.3509,0.1284,0.6491,0.1779,True,1.3188,1.4219,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,region,North Western Region,False,463,0.0855,82,0.1771,90,0.1944,26,64,317,56,0.2889,0.3171,0.168,0.6829,0.1803,True,1.5187,1.8605,disparate_impact_warning; elevated_fpr_ratio_warning
+classifier_level,fixed_threshold_0.25,region,Scotland,False,636,0.1175,113,0.1777,141,0.2217,46,95,428,67,0.3262,0.4071,0.1816,0.5929,0.1879,True,1.732,2.0111,disparate_impact_warning; elevated_fpr_ratio_warning
+classifier_level,fixed_threshold_0.25,region,South East Region,True,328,0.0606,51,0.1555,42,0.128,17,25,252,34,0.4048,0.3333,0.0903,0.6667,0.1634,True,1.0,1.0,within_tolerance
+classifier_level,fixed_threshold_0.25,region,South Region,False,510,0.0942,78,0.1529,83,0.1627,22,61,371,56,0.2651,0.2821,0.1412,0.7179,0.1691,True,1.2711,1.5637,disparate_impact_warning; elevated_fpr_ratio_warning
+classifier_level,fixed_threshold_0.25,region,South West Region,False,405,0.0748,62,0.1531,67,0.1654,16,51,292,46,0.2388,0.2581,0.1487,0.7419,0.1732,True,1.2922,1.6467,disparate_impact_warning; elevated_fpr_ratio_warning
+classifier_level,fixed_threshold_0.25,region,Wales,False,391,0.0722,75,0.1918,71,0.1816,31,40,276,44,0.4366,0.4133,0.1266,0.5867,0.177,True,1.4188,1.402,disparate_impact_warning
+classifier_level,fixed_threshold_0.25,region,West Midlands Region,False,429,0.0792,65,0.1515,73,0.1702,16,57,307,49,0.2192,0.2462,0.1566,0.7538,0.1707,True,1.3297,1.7342,disparate_impact_warning; elevated_fpr_ratio_warning
+classifier_level,fixed_threshold_0.25,region,Yorkshire Region,False,294,0.0543,44,0.1497,51,0.1735,14,37,213,30,0.2745,0.3182,0.148,0.6818,0.1704,True,1.3555,1.639,disparate_impact_warning; elevated_fpr_ratio_warning

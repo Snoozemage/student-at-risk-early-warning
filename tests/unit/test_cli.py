@@ -88,3 +88,23 @@ def test_cli_build_cohort_dispatch(tmp_path):
             save_outputs=True,
             output_dir=tmp_path,
         )
+
+
+def test_cli_audit_fairness_dispatch(tmp_path):
+    with (
+        patch("student_retention.cli.run_audit_fairness") as mock_audit_fn,
+    ):
+        mock_audit_fn.return_value = 0
+        ret = main(["audit-fairness", "--output-dir", str(tmp_path)])
+        assert ret == 0
+        mock_audit_fn.assert_called_once()
+
+
+def test_cli_generate_support_queue_dispatch(tmp_path):
+    with (
+        patch("student_retention.cli.run_generate_support_queue") as mock_queue_fn,
+    ):
+        mock_queue_fn.return_value = 0
+        ret = main(["generate-support-queue", "--output-path", str(tmp_path / "queue.csv")])
+        assert ret == 0
+        mock_queue_fn.assert_called_once()

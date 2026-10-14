@@ -1,5 +1,12 @@
 """Modeling package: split strategies, pipelines, baseline, training, evaluation, and interpretation."""
 from student_retention.modeling.baseline import train_dummy_baseline
+from student_retention.modeling.calibration import (
+    compute_calibration_diagnostics,
+    evaluate_calibration_methods_on_training_data,
+    fit_calibrated_model,
+    load_calibrated_model,
+    save_calibrated_model,
+)
 from student_retention.modeling.evaluate import (
     compute_classification_metrics,
     compute_top_k_metrics,
@@ -42,6 +49,7 @@ __all__ = [
     "MODEL_CONFIGS",
     "NUMERIC_FEATURES",
     "build_model_pipeline",
+    "compute_calibration_diagnostics",
     "compute_classification_metrics",
     "compute_permutation_importance",
     "compute_top_k_metrics",
@@ -49,15 +57,19 @@ __all__ = [
     "compute_top_k_metrics_by_presentation",
     "compute_top_k_metrics_by_term",
     "create_preprocessor",
+    "evaluate_calibration_methods_on_training_data",
     "extract_logistic_regression_coefficients",
     "extract_random_forest_importance",
     "find_error_cases",
     "find_optimal_threshold",
+    "fit_calibrated_model",
     "get_feature_subsets",
     "get_group_kfold_splits",
+    "load_calibrated_model",
     "load_model",
     "predict_withdrawal_risk",
     "run_cross_validation_for_model",
+    "save_calibrated_model",
     "scan_thresholds",
     "split_by_student_group",
     "split_chronological",

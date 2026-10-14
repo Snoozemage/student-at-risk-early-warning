@@ -30,6 +30,7 @@ QUALITY_REPORTS_DIR = OUTPUTS_DIR / "quality_reports"
 REPORTS_DIR = OUTPUTS_DIR / "reports"
 FIGURES_DIR = OUTPUTS_DIR / "figures"
 TABLES_DIR = OUTPUTS_DIR / "tables"
+PREDICTIONS_DIR = OUTPUTS_DIR / "predictions"
 LOGS_DIR = OUTPUTS_DIR / "logs"
 
 # Model artifact directories
@@ -51,6 +52,7 @@ def ensure_directories():
         REPORTS_DIR,
         FIGURES_DIR,
         TABLES_DIR,
+        PREDICTIONS_DIR,
         LOGS_DIR,
         MODELS_DIR,
         MODELS_BASELINE_DIR,

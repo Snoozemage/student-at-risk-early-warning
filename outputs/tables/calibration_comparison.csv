@@ -1,0 +1,3 @@
+model_configuration,calibration_method,evaluation_split,brier_score,expected_calibration_error,maximum_calibration_error,min_probability,max_probability,mean_probability
+Random Forest (Raw Probabilities),none,held_out_test_cohort,0.13131,0.0115,0.32556,0.025,0.5435,0.1739
+Random Forest (Isotonic Calibrated),isotonic_group_kfold_cv,held_out_test_cohort,0.13135,0.00734,0.24919,0.0,0.7924,0.1731
