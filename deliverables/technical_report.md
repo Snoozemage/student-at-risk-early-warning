@@ -72,21 +72,21 @@ The primary feature store comprises **22 baseline features** across four functio
 | Model | Precision | Recall | F1 Score | PR-AUC | ROC-AUC | Brier Score | Decision Threshold |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | Dummy (Class Prior) | 0.1681 | 1.0000 | 0.2878 | 0.1681 | 0.5000 | 0.13988 | 0.01 |
-| Logistic Regression (Unweighted) | 0.3172 | 0.2956 | 0.3060 | 0.2955 | 0.6698 | 0.13230 | 0.26 |
-| Logistic Regression (Balanced) | 0.3220 | 0.2923 | 0.3065 | 0.2917 | 0.6690 | 0.22445 | 0.63 |
-| Random Forest (Unweighted) | 0.3170 | 0.3275 | 0.3222 | 0.3101 | 0.6797 | 0.13131 | 0.25 |
-| Random Forest (Balanced) | 0.3292 | 0.2934 | 0.3103 | 0.3084 | 0.6764 | 0.21803 | 0.60 |
+| Logistic Regression (Unweighted) | 0.3152 | 0.2923 | 0.3033 | 0.2966 | 0.6703 | 0.13221 | 0.26 |
+| Logistic Regression (Balanced) | 0.3156 | 0.3055 | 0.3104 | 0.2934 | 0.6695 | 0.22433 | 0.62 |
+| Random Forest (Unweighted) | 0.3242 | 0.3253 | 0.3247 | 0.3123 | 0.6813 | 0.13118 | 0.25 |
+| Random Forest (Balanced) | 0.3176 | 0.3110 | 0.3143 | 0.3077 | 0.6762 | 0.21816 | 0.59 |
 
 ### Probability Calibration Diagnostics
 
 | Model Configuration | Calibration Method | Brier Score | ECE | MCE | Min Prob | Max Prob | Mean Prob |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| Random Forest (Raw Probabilities) | none | 0.13131 | 0.01150 | 0.32556 | 0.0250 | 0.5435 | 0.1739 |
-| Random Forest (Isotonic Calibrated) | isotonic_group_kfold_cv | 0.13135 | 0.00734 | 0.24919 | 0.0000 | 0.7924 | 0.1731 |
+| Random Forest (Raw Probabilities) | none | 0.13118 | 0.01239 | 0.38937 | 0.0280 | 0.5624 | 0.1741 |
+| Random Forest (Isotonic Calibrated) | isotonic_group_kfold_cv | 0.13107 | 0.00649 | 0.18942 | 0.0016 | 0.9425 | 0.1732 |
 
 - Evaluated candidate calibration procedures strictly on the training partition via 5-fold `GroupKFold` out-of-fold cross-validation.
 - Isotonic calibration was selected based on training-only selection metadata.
-- On untouched test data, Isotonic calibration improved empirical probability alignment, achieving a **36.2% error reduction** in Expected Calibration Error ($0.01150 \to 0.00734$).
+- On untouched test data, Isotonic calibration improved empirical probability alignment, achieving a **47.6% error reduction** in Expected Calibration Error ($0.01239 \to 0.00649$).
 
 ---
 
@@ -99,15 +99,16 @@ Conducted dual subgroup audits across protected demographic characteristics (eva
 |                                SUBGROUP PARITY FINDINGS                                 |
 +-----------------------------------------------------------------------------------------+
 |  1. Classifier Diagnostic (Fixed Threshold theta = 0.25):                               |
-|     - Disparate Impact Warnings: 14 stable subgroups outside [0.80, 1.25]               |
+|     - Disparate Impact Warnings: 12 stable subgroups outside [0.80, 1.25]               |
 |     - Elevated FPR Warnings: 7 stable subgroups exceeding FPR ratio 1.50                |
 |                                                                                         |
 |  2. Operational Support Queue Policy (Top-500 Calibrated Allocation):                   |
-|     - Disparate Impact Warnings: 4 stable subgroups                                     |
-|       * gender F: DIR = 0.6503 (Selection Rate 28.66%)                                  |
-|       * age_band 35-55: DIR = 0.7722 (Selection Rate 30.74%)                            |
-|       * region North Western Region: DIR = 1.2657 (Selection Rate 41.68%)               |
-|       * region Scotland: DIR = 1.2606 (Selection Rate 41.51%)                           |
+|     - Disparate Impact Warnings: 5 stable subgroups                                     |
+|       * gender F: DIR = 0.6560 (Selection Rate 28.82%)                                  |
+|       * age_band 35-55: DIR = 0.7686 (Selection Rate 30.62%)                            |
+|       * region London Region: DIR = 1.2587 (Selection Rate 40.68%)                      |
+|       * region North Western Region: DIR = 1.2763 (Selection Rate 41.25%)               |
+|       * region Scotland: DIR = 1.2939 (Selection Rate 41.82%)                           |
 |     - Elevated FPR Warnings: 0 stable subgroups exceeding FPR ratio 1.50                |
 +-----------------------------------------------------------------------------------------+
 ```
@@ -120,7 +121,7 @@ The demonstration support queue deliverable (`outputs/predictions/student_suppor
 
 - `2013B`: 500 slots, 500 unique students, 0 duplicate slots.
 - `2013J`: 500 slots, 500 unique students, 0 duplicate slots.
-- `2014B`: 500 slots, 485 unique students, 15 duplicate slots.
+- `2014B`: 500 slots, 483 unique students, 17 duplicate slots.
 - `2014J`: 500 slots, 477 unique students, 23 duplicate slots.
 - **Total:** 2,000 slots, 1,827 unique students, 173 duplicate slots across terms.
 

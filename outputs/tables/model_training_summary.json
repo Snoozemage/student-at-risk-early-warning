@@ -30,41 +30,41 @@
   "threshold_map": {
     "dummy_baseline": 0.01,
     "logistic_regression": 0.26,
-    "logistic_regression_balanced": 0.63,
+    "logistic_regression_balanced": 0.62,
     "random_forest": 0.25,
-    "random_forest_balanced": 0.6
+    "random_forest_balanced": 0.59
   },
   "chronological_threshold_map": {
     "dummy_baseline": 0.01,
-    "logistic_regression": 0.27,
-    "random_forest": 0.28
+    "logistic_regression": 0.26,
+    "random_forest": 0.27
   },
   "provisional_target_audit": {
     "pr_auc": {
       "provisional_benchmark": ">= 0.40",
-      "achieved_test_metric": 0.310089487916654,
+      "achieved_test_metric": 0.31230218054184755,
       "status": "unmet_provisional_benchmark",
       "baseline_dummy_pr_auc": 0.1680827484299963,
-      "relative_lift_over_dummy": "+84.5%",
-      "notes": "Provisional planning target (>= 0.40) is unmet on held-out test data. Random Forest achieves PR-AUC 0.3101 vs dummy baseline 0.1681 (+84.5% relative lift), providing substantial early-warning discrimination given Day-35 boundary constraints. This represents an unmet provisional planning benchmark, not an automated system failure."
+      "relative_lift_over_dummy": "+85.8%",
+      "notes": "Provisional planning target (>= 0.40) is unmet on held-out test data. Random Forest achieves PR-AUC 0.3123 vs dummy baseline 0.1681 (+85.8% relative lift), providing substantial early-warning discrimination given Day-35 boundary constraints. This represents an unmet provisional planning benchmark, not an automated system failure."
     },
     "precision_at_500_pooled_diagnostic": {
       "provisional_benchmark": ">= 0.50",
       "evaluation_scope": "pooled_test_cohort_diagnostic",
-      "achieved_test_metric": 0.374,
+      "achieved_test_metric": 0.37,
       "status": "unmet_provisional_benchmark",
       "baseline_dummy_precision": 0.1680827484299963,
-      "relative_enrichment": "2.23x over base rate",
-      "notes": "Provisional planning capacity benchmark (>= 0.50) is unmet on pooled test cohort. Achieved Precision@500 is 0.3740 (capturing 187 at-risk students out of 500 alerts), providing 2.23x enrichment over random outreach base rate (16.8%). This represents an unmet provisional planning benchmark on the pooled cohort diagnostic, not an automated system failure."
+      "relative_enrichment": "2.20x over base rate",
+      "notes": "Provisional planning capacity benchmark (>= 0.50) is unmet on pooled test cohort. Achieved Precision@500 is 0.3700 (capturing 185 at-risk students out of 500 alerts), providing 2.20x enrichment over random outreach base rate (16.8%). This represents an unmet provisional planning benchmark on the pooled cohort diagnostic, not an automated system failure."
     },
     "precision_at_500_pooled": {
       "provisional_benchmark": ">= 0.50",
       "evaluation_scope": "pooled_test_cohort_diagnostic",
-      "achieved_test_metric": 0.374,
+      "achieved_test_metric": 0.37,
       "status": "unmet_provisional_benchmark",
       "baseline_dummy_precision": 0.1680827484299963,
-      "relative_enrichment": "2.23x over base rate",
-      "notes": "Provisional planning capacity benchmark (>= 0.50) is unmet on pooled test cohort. Achieved Precision@500 is 0.3740 (capturing 187 at-risk students out of 500 alerts), providing 2.23x enrichment over random outreach base rate (16.8%). This represents an unmet provisional planning benchmark on the pooled cohort diagnostic, not an automated system failure."
+      "relative_enrichment": "2.20x over base rate",
+      "notes": "Provisional planning capacity benchmark (>= 0.50) is unmet on pooled test cohort. Achieved Precision@500 is 0.3700 (capturing 185 at-risk students out of 500 alerts), providing 2.20x enrichment over random outreach base rate (16.8%). This represents an unmet provisional planning benchmark on the pooled cohort diagnostic, not an automated system failure."
     },
     "precision_at_500_operational_per_term": {
       "provisional_benchmark": ">= 0.50",
@@ -75,36 +75,36 @@
         "2014B": {
           "record_level_precision_at_500": 0.394,
           "positives_captured": 197.0,
-          "unique_students_in_top_500": 479,
-          "duplicate_student_slots": 21,
+          "unique_students_in_top_500": 475,
+          "duplicate_student_slots": 25,
           "total_enrollment_records": 6415,
           "total_unique_students": 6136
         },
         "2014J": {
-          "record_level_precision_at_500": 0.436,
-          "positives_captured": 218.0,
-          "unique_students_in_top_500": 481,
-          "duplicate_student_slots": 19,
+          "record_level_precision_at_500": 0.448,
+          "positives_captured": 224.0,
+          "unique_students_in_top_500": 482,
+          "duplicate_student_slots": 18,
           "total_enrollment_records": 9009,
           "total_unique_students": 8681
         }
       },
-      "notes": "Business requirements specify advisor outreach capacity at approximately K=500 per academic term across modules. Evaluating Random Forest on chronological out-of-time test terms (2014B and 2014J) yields record-level Precision@500 of 0.3940 (2014B) and 0.4360 (2014J), both below the provisional >= 0.50 planning target on module-presentation enrollment records. Furthermore, concurrent course enrollments (279 students in 2014B, 328 in 2014J) cause multi-course learners to occupy duplicate slots in the unaggregated queue (yielding 479 unique students in 2014B and 481 unique students in 2014J). Because institutional business requirements specify capacity in students but do not define a multi-course risk aggregation policy (e.g. max risk vs mean risk) or student-level outcome mapping, the operational unique-student benchmark status is reported as unresolved pending institutional policy definition, rather than conflating record-level metrics with unique-student capacity."
+      "notes": "Business requirements specify advisor outreach capacity at approximately K=500 per academic term across modules. Evaluating Random Forest on chronological out-of-time test terms (2014B and 2014J) yields record-level Precision@500 of 0.3940 (2014B) and 0.4480 (2014J), both below the provisional >= 0.50 planning target on module-presentation enrollment records. Furthermore, concurrent course enrollments (279 students in 2014B, 328 in 2014J) cause multi-course learners to occupy duplicate slots in the unaggregated queue (yielding 475 unique students in 2014B and 482 unique students in 2014J). Because institutional business requirements specify capacity in students but do not define a multi-course risk aggregation policy (e.g. max risk vs mean risk) or student-level outcome mapping, the operational unique-student benchmark status is reported as unresolved pending institutional policy definition, rather than conflating record-level metrics with unique-student capacity."
     },
     "operational_scoping_note": "K=500 evaluated on the pooled test set (N=5,414) is an analytical diagnostic. Operational per-term outreach capacity K=500 is evaluated across academic terms in top_k_evaluation_by_term.csv (pooling modules within each academic term), and per course module offering in top_k_evaluation_by_module_presentation.csv."
   },
   "cv_pr_auc": {
     "dummy_baseline": 0.17537045853739658,
-    "logistic_regression": 0.31807705430143024,
-    "logistic_regression_balanced": 0.31432553905925315,
-    "random_forest": 0.3281100902281056,
-    "random_forest_balanced": 0.3258486128485522
+    "logistic_regression": 0.32027556655308886,
+    "logistic_regression_balanced": 0.3167785377418496,
+    "random_forest": 0.3312080868150432,
+    "random_forest_balanced": 0.32928382111781096
   },
   "test_pr_auc": {
     "dummy_baseline": 0.1680827484299963,
-    "logistic_regression": 0.29545539557682,
-    "logistic_regression_balanced": 0.29171017359310547,
-    "random_forest": 0.310089487916654,
-    "random_forest_balanced": 0.30843707896670625
+    "logistic_regression": 0.2966372096144655,
+    "logistic_regression_balanced": 0.29341745598297647,
+    "random_forest": 0.31230218054184755,
+    "random_forest_balanced": 0.3076585882287892
   }
 }

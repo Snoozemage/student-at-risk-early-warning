@@ -3,6 +3,7 @@
 import pandas as pd
 import streamlit as st
 
+from app.components.chart_rendering import render_matplotlib_figure, render_png_file
 from student_retention.paths import (
     get_figures_dir,
     get_tables_dir,
@@ -46,10 +47,10 @@ def render_engagement_patterns() -> None:
         with col_fig:
             fig3_path = get_figures_dir() / "fig3_weekly_vle_activity_curves.png"
             if fig3_path.exists():
-                st.image(str(fig3_path), caption="Figure 3: Weekly mean VLE clicks across outcome groups up to Day 35.", width="stretch")
+                render_png_file(fig3_path, alt="Weekly mean VLE activity by outcome group through Day 35", caption="Figure 3: Weekly mean VLE clicks across outcome groups up to Day 35.")
             else:
                 fig = create_weekly_activity_chart()
-                st.pyplot(fig)
+                render_matplotlib_figure(fig, alt="Weekly mean VLE activity by outcome group")
 
         with col_text:
             st.markdown("#### Key Longitudinal Insights:")
@@ -66,7 +67,7 @@ def render_engagement_patterns() -> None:
         with col_fig5:
             fig5_path = get_figures_dir() / "fig5_assessment_submission_progress.png"
             if fig5_path.exists():
-                st.image(str(fig5_path), caption="Figure 5: Assessment submission rate and missed due milestone proportions.", width="stretch")
+                render_png_file(fig5_path, alt="Assessment submission rates and missed deadlines by outcome group", caption="Figure 5: Assessment submission rate and missed due milestone proportions.")
             else:
                 st.info("Assessment submission progress figure not available.")
 
@@ -107,7 +108,7 @@ def render_engagement_patterns() -> None:
         with col_fig4:
             fig4_path = get_figures_dir() / "fig4_registration_lead_time_distribution.png"
             if fig4_path.exists():
-                st.image(str(fig4_path), caption="Figure 4: Registration lead time distribution by outcome group.", width="stretch")
+                render_png_file(fig4_path, alt="Registration timing distribution by outcome group", caption="Figure 4: Registration lead time distribution by outcome group.")
             else:
                 st.info("Registration lead time distribution figure not available.")
 
@@ -165,13 +166,13 @@ def render_model_performance() -> None:
         with c_pr:
             pr_path = get_figures_dir() / "pr_curves.png"
             if pr_path.exists():
-                st.image(str(pr_path), caption="Precision-Recall Curves across candidate models on held-out test cohort.", width="stretch")
+                render_png_file(pr_path, alt="Precision-recall curves for candidate models on held-out test data", caption="Precision-Recall Curves across candidate models on held-out test cohort.")
             else:
                 st.info("PR curves figure not available.")
         with c_roc:
             roc_path = get_figures_dir() / "roc_curves.png"
             if roc_path.exists():
-                st.image(str(roc_path), caption="ROC Curves across candidate models on held-out test cohort.", width="stretch")
+                render_png_file(roc_path, alt="ROC curves for candidate models on held-out test data", caption="ROC Curves across candidate models on held-out test cohort.")
             else:
                 st.info("ROC curves figure not available.")
 
@@ -194,7 +195,7 @@ def render_model_performance() -> None:
         with col_cal_fig:
             cal_fig_path = get_figures_dir() / "calibration_curves.png"
             if cal_fig_path.exists():
-                st.image(str(cal_fig_path), caption="Reliability Diagram (Calibration Curves)", width="stretch")
+                render_png_file(cal_fig_path, alt="Calibration reliability curves", caption="Reliability Diagram (Calibration Curves)")
             else:
                 st.info("Calibration reliability curves figure not available.")
 
@@ -256,12 +257,12 @@ def render_model_performance() -> None:
         with col_topk_fig:
             topk_fig_path = get_figures_dir() / "top_k_gains.png"
             if topk_fig_path.exists():
-                st.image(str(topk_fig_path), caption="Cumulative Recall Gains vs Advisor Capacity (K)", width="stretch")
+                render_png_file(topk_fig_path, alt="Top-K ranking precision compared with cohort prevalence", caption="Cumulative Recall Gains vs Advisor Capacity (K)")
             else:
                 topk_raw_path = get_tables_dir() / "top_k_evaluation.csv"
                 topk_df = pd.read_csv(topk_raw_path) if topk_raw_path.exists() else pd.DataFrame()
                 if not topk_df.empty:
-                    st.pyplot(create_top_k_enrichment_chart(topk_df))
+                    render_matplotlib_figure(create_top_k_enrichment_chart(topk_df), alt="Top-K ranking precision compared with cohort prevalence")
                 else:
                     st.info("Top-K visualization data not available.")
 
@@ -386,13 +387,13 @@ def render_fairness_and_limitations() -> None:
                 sel_attr = st.selectbox("Select Demographic Characteristic to Visualize:", options=attrs)
 
                 fig_disparity = create_subgroup_disparity_chart(raw_audit_df, attribute=sel_attr)
-                st.pyplot(fig_disparity)
+                render_matplotlib_figure(fig_disparity, alt=f"Fairness disparity chart for {sel_attr}")
 
                 st.markdown(f"#### Complete Audit Metrics for: `{sel_attr}`")
                 display_source = formatted_audit_df if not formatted_audit_df.empty else raw_audit_df
                 attr_table = display_source[display_source["protected_attribute"] == sel_attr]
                 display_cols = [c for c in ["subgroup", "sample_size", "base_rate_pct", "selection_rate_pct", "recall_pct", "precision_pct", "di_ratio_fmt", "disparate_impact_warning", "elevated_fpr_warning"] if c in attr_table.columns]
-                st.dataframe(attr_table[display_cols], width="stretch")
+                st.dataframe(attr_table[display_cols].reset_index(drop=True), width="stretch")
 
                 st.markdown("---")
                 st.markdown("### 🔍 Summary of Parity Warnings Across Subgroups")
@@ -430,7 +431,7 @@ def render_fairness_and_limitations() -> None:
                             st.metric("Disparate Impact Warnings (DIR < 0.80 or > 1.25)", len(di_warns))
                             if not di_warns.empty:
                                 disp_cols = [c for c in ["protected_attribute", "subgroup", "selection_rate", "disparate_impact_ratio"] if c in di_warns.columns]
-                                st.dataframe(di_warns[disp_cols], width="stretch")
+                                st.dataframe(di_warns[disp_cols].reset_index(drop=True), width="stretch")
                             else:
                                 st.success("Zero disparate impact warnings detected among statistically stable subgroups.")
                         else:
@@ -442,7 +443,7 @@ def render_fairness_and_limitations() -> None:
                             st.metric("Elevated False Positive Rate Warnings (FPR Ratio > 1.50)", len(fpr_warns))
                             if not fpr_warns.empty:
                                 disp_cols = [c for c in ["protected_attribute", "subgroup", "false_positive_rate", "fpr_ratio"] if c in fpr_warns.columns]
-                                st.dataframe(fpr_warns[disp_cols], width="stretch")
+                                st.dataframe(fpr_warns[disp_cols].reset_index(drop=True), width="stretch")
                             else:
                                 st.success("Zero elevated False Positive Rate warnings detected among statistically stable subgroups.")
                         else:

@@ -1,6 +1,6 @@
 code_presentation,caseload_enrollment_slots,unique_students_in_queue,duplicate_slots,multi_course_students_in_queue,unresolved_aggregation_status
 2013B,500,500,0,0,unresolved_pending_institutional_policy
 2013J,500,500,0,0,unresolved_pending_institutional_policy
-2014B,500,485,15,15,unresolved_pending_institutional_policy
+2014B,500,483,17,17,unresolved_pending_institutional_policy
 2014J,500,477,23,23,unresolved_pending_institutional_policy
-ALL_TERMS_TOTAL,2000,1827,173,167,unresolved_pending_institutional_policy
+ALL_TERMS_TOTAL,2000,1827,173,166,unresolved_pending_institutional_policy

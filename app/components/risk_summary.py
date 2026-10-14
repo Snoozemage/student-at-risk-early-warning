@@ -2,6 +2,7 @@
 
 import streamlit as st
 
+from app.components.chart_rendering import render_matplotlib_figure
 from student_retention.reporting.charts import create_tier_distribution_chart
 from student_retention.reporting.tables import load_executive_kpis
 
@@ -92,7 +93,10 @@ def render_operational_overview() -> None:
                 "Tier 3 (Standard)": kpis["tier_3_standard_count"],
             }
             fig_tiers = create_tier_distribution_chart(tier_counts)
-            st.pyplot(fig_tiers)
+            render_matplotlib_figure(
+                fig_tiers,
+                alt="Held-out demonstration queue distribution across the three priority tiers",
+            )
 
             uniq_str = f"{kpis['queue_unique_students']:,}" if kpis.get("queue_unique_students") is not None else "N/A"
             dup_str = f"{kpis['queue_duplicate_slots']:,}" if kpis.get("queue_duplicate_slots") is not None else "N/A"

@@ -46,8 +46,8 @@
 - **Talking Points:**
   - Strict group-aware splitting on student ID (zero student overlap between train and test).
   - Heavy class imbalance (17.39% positive base rate) makes accuracy misleading; PR-AUC is primary.
-  - **Random Forest Performance:** PR-AUC **0.3101** (+84.5% relative lift over dummy baseline 0.1681).
-  - ROC-AUC: 0.6797.
+  - **Random Forest Performance:** PR-AUC **0.3123** (+85.8% relative lift over dummy baseline 0.1681).
+  - ROC-AUC: 0.6813.
 - **Visual:** Precision-Recall Curves comparing Dummy, Logistic Regression, and Random Forest.
 
 ---
@@ -56,7 +56,7 @@
 - **Talking Points:**
   - Raw tree ensemble probabilities are compressed and unsuited for direct risk thresholds.
   - **Methodology:** Training-only cross-validation selected Isotonic calibration based on persisted selection metadata.
-  - **Out-of-Time Test Result:** Expected Calibration Error (ECE) dropped from 0.0115 to **0.0073 (36.2% error reduction)**.
+  - **Out-of-Time Test Result:** Expected Calibration Error (ECE) dropped from 0.0124 to **0.0065 (47.6% error reduction)**.
   - The 0.70 Urgent and 0.40 Watch cut points are proposed demonstration settings; probability calibration does not validate decision thresholds or intervention benefit.
 - **Visual:** Reliability diagram (Calibration curve) showing 10-bin calibration before and after.
 
@@ -64,9 +64,9 @@
 
 ## Slide 7: Raw Random Forest Top-K Diagnostic & Chronological Capacity Evaluation
 - **Talking Points:**
-  - Pooled random-test diagnostic using uncalibrated Random Forest scores: top-500 precision is **37.4%** versus 16.81% test-split baseline; this is not a per-term capacity estimate.
-  - **Pooled-test enrichment:** **2.23x** relative to random ranking (187 positive enrollment records among the pooled top 500).
-- **Chronological per-term K=500 results:** 2014B: Precision@500=0.394 (197 positive enrollment records captured; 479 expected unique students selected; 21 expected duplicate enrollment slots); 2014J: Precision@500=0.436 (218 positive enrollment records captured; 481 expected unique students selected; 19 expected duplicate enrollment slots). Student-level capacity remains unresolved pending an approved multi-course aggregation policy.
+  - Pooled random-test diagnostic using uncalibrated Random Forest scores: top-500 precision is **37.0%** versus 16.81% test-split baseline; this is not a per-term capacity estimate.
+  - **Pooled-test enrichment:** **2.20x** relative to random ranking (185 positive enrollment records among the pooled top 500).
+- **Chronological per-term K=500 results:** 2014B: Precision@500=0.394 (197 positive enrollment records captured; 475 expected unique students selected; 25 expected duplicate enrollment slots); 2014J: Precision@500=0.448 (224 positive enrollment records captured; 482 expected unique students selected; 18 expected duplicate enrollment slots). Student-level capacity remains unresolved pending an approved multi-course aggregation policy.
 - **Visual:** Pooled-test ranking diagnostic and separate chronological per-term results.
 
 ---
@@ -74,9 +74,9 @@
 ## Slide 8: Student Support Queue & Triage Workflow
 - **Talking Points:**
   - Demonstration queue deliverable: 2,000 cases across academic terms.
-  - **Tier 1 (proposed cutoff $\ge 70\%$):** 2 cases; proposed 3-day human-review response target.
-  - **Tier 2 (proposed 40-70%):** 167 cases; proposed 7-day supportive check-in target.
-  - **Tier 3 (Standard, $< 40\%$):** 1,831 cases $\to$ Routine monitoring.
+  - **Tier 1 (proposed cutoff $\ge 70\%$):** 9 cases; proposed 3-day human-review response target.
+  - **Tier 2 (proposed 40-70%):** 177 cases; proposed 7-day supportive check-in target.
+  - **Tier 3 (Standard, $< 40\%$):** 1,814 cases $\to$ Routine monitoring.
 - **Visual:** Interactive Streamlit dashboard screenshot showing the Student Support Queue.
 
 ---
@@ -111,7 +111,7 @@
 
 ## Slide 12: Summary & Discussion
 - **Summary Takeaways:**
-  1. Pooled-test Top-500 diagnostic showed 2.23x enrichment over random ranking.
-  2. Isotonic calibration improved empirical probability alignment (0.0073 ECE) on the held-out evaluation split.
+  1. Pooled-test Top-500 diagnostic showed 2.20x enrichment over random ranking.
+  2. Isotonic calibration improved empirical probability alignment (0.0065 ECE) on the held-out evaluation split.
   3. Strict human-in-the-loop guardrails uphold supportive, stigma-free advising protocols.
 - **Open for Questions:** Discussion on advisor capacity, multi-course aggregation, and pilot deployment.

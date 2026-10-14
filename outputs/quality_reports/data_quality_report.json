@@ -1,7 +1,7 @@
 {
   "report_type": "data_quality_report",
   "phase": "Phase 2 - Ingestion, Cleaning and Data Quality",
-  "timestamp_utc": "2026-10-13T07:29:21.360236+00:00",
+  "timestamp_utc": "2026-10-14T11:46:42.400357+00:00",
   "status": "PASSED",
   "summary": {
     "tables_audited": 7,

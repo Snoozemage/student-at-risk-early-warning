@@ -24,11 +24,11 @@ Operating under primary **Policy C (Strict Clean-Data)** on 27,128 eligible stud
 | **Eligible Student Cohort** | **27,128 records** | Complete courses across 22 module-presentations |
 | **Withdrawal Base Rate** | **17.39%** | 4,718 post-cutoff withdrawals (class imbalance ~1:5) |
 | **Evaluation Design** | **Zero-Leakage Group Split** | 80% train / 20% test ($N=5,414$) with 0 student overlap |
-| **Model PR-AUC (Random Forest)** | **0.3101** | Primary ranking metric on held-out test cohort |
-| **PR-AUC Relative Lift** | **+84.5%** | Measured relative lift over class-prior dummy baseline (0.1681) |
-| **Pooled-Test Precision@500 Diagnostic (Raw Random Forest Ranking)** | **37.4%** | 187 positive enrollment records among the top 500 in the pooled random test split; not a per-term capacity estimate |
-| **Pooled-Test Enrichment Diagnostic** | **2.23x** | More than double the test-split random-ranking baseline in this pooled diagnostic |
-| **Probability Calibration (ECE)** | **0.0073 (36.2% error reduction)** | Isotonic calibration improved empirical probability alignment on this test split |
+| **Model PR-AUC (Random Forest)** | **0.3123** | Primary ranking metric on held-out test cohort |
+| **PR-AUC Relative Lift** | **+85.8%** | Measured relative lift over class-prior dummy baseline (0.1681) |
+| **Pooled-Test Precision@500 Diagnostic (Raw Random Forest Ranking)** | **37.0%** | 185 positive enrollment records among the top 500 in the pooled random test split; not a per-term capacity estimate |
+| **Pooled-Test Enrichment Diagnostic** | **2.20x** | More than double the test-split random-ranking baseline in this pooled diagnostic |
+| **Probability Calibration (ECE)** | **0.0065 (47.6% error reduction)** | Isotonic calibration improved empirical probability alignment on this test split |
 
 ### Critical Early Warning Indicators
 
@@ -44,7 +44,7 @@ Operating under primary **Policy C (Strict Clean-Data)** on 27,128 eligible stud
 
 The demonstration queue contains held-out test enrollment records, capped at up to $K=500$ enrollment slots per presentation (2,000 slots across the represented terms). It is not an estimate of a future per-term unique-student caseload. The 0.70/0.40 tier cut points and 3/7-day response targets below are proposed workflow settings, not empirically validated decision thresholds or service levels.
 
-Chronological out-of-time per-term K=500 evaluation using uncalibrated Random Forest ranking scores: 2014B: Precision@500=0.394 (197 positive enrollment records captured; 479 expected unique students selected; 21 expected duplicate enrollment slots); 2014J: Precision@500=0.436 (218 positive enrollment records captured; 481 expected unique students selected; 19 expected duplicate enrollment slots). Student-level capacity remains unresolved pending an approved multi-course aggregation policy.
+Chronological out-of-time per-term K=500 evaluation using uncalibrated Random Forest ranking scores: 2014B: Precision@500=0.394 (197 positive enrollment records captured; 475 expected unique students selected; 25 expected duplicate enrollment slots); 2014J: Precision@500=0.448 (224 positive enrollment records captured; 482 expected unique students selected; 18 expected duplicate enrollment slots). Student-level capacity remains unresolved pending an approved multi-course aggregation policy.
 
 ```
 +-----------------------------------------------------------------------------------------+
@@ -56,9 +56,9 @@ Chronological out-of-time per-term K=500 evaluation using uncalibrated Random Fo
 +-----------------------------------------------------------------------------------------+
 ```
 
-- **Urgent Cases (Tier 1):** 2 records (0.1% of demonstration queue) fall in the proposed highest-score review band.
-- **Watch Cases (Tier 2):** 167 records (8.3% of demonstration queue) fall in the proposed intermediate-score review band.
-- **Standard Cases (Tier 3):** 1,831 records (91.5% of demonstration queue) fall below the proposed review bands.
+- **Urgent Cases (Tier 1):** 9 records (0.4% of demonstration queue) fall in the proposed highest-score review band.
+- **Watch Cases (Tier 2):** 177 records (8.8% of demonstration queue) fall in the proposed intermediate-score review band.
+- **Standard Cases (Tier 3):** 1,814 records (90.7% of demonstration queue) fall below the proposed review bands.
 
 ---
 

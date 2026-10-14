@@ -5,8 +5,10 @@ from pathlib import Path
 
 import pandas as pd
 import pytest
+from PIL import Image
 from streamlit.testing.v1 import AppTest
 
+from app.components import chart_rendering
 from student_retention.paths import PROJECT_ROOT
 from student_retention.pipeline.run_pipeline import run_pipeline
 
@@ -206,6 +208,11 @@ def test_dashboard_clean_environment_missing_inputs(clean_outputs_dir: Path):
     # Switch to Model Performance
     app.sidebar.radio[0].set_value("Model Performance").run(timeout=30)
     assert not app.exception
+    unavailable_messages = [info.value for info in app.info]
+    assert any("PR curves figure not available" in message for message in unavailable_messages)
+    assert any("ROC curves figure not available" in message for message in unavailable_messages)
+    assert any("Calibration reliability curves figure not available" in message for message in unavailable_messages)
+    assert any("Top-K visualization data not available" in message for message in unavailable_messages)
 
     # Switch to Fairness and Limitations
     app.sidebar.radio[0].set_value("Fairness and Limitations").run(timeout=30)
@@ -232,6 +239,20 @@ def test_dashboard_populated_environment_queue_page(populated_outputs_dir: Path)
     assert "Example Support Option (for advisor review)" in rendered
     assert "Demonstration response setting (not validated)" in rendered
     assert "Response Timeline (SLA)" not in rendered
+
+    # Filters change the displayed cohort and the case inspector follows selection.
+    app.sidebar.multiselect[1].set_value(["AAA"]).run(timeout=30)
+    assert not app.exception
+    assert app.metric[0].value == "3"
+    app.selectbox[0].set_value("STU_TEST_1").run(timeout=30)
+    assert not app.exception
+    assert any("STU_TEST_1" in item.value for item in app.markdown)
+
+    # The status action is explicitly a simulation and reports the selected value.
+    app.selectbox[1].set_value("Under Review").run(timeout=30)
+    app.button[0].click().run(timeout=30)
+    assert not app.exception
+    assert any("Status for student `STU_TEST_1` updated to: **Under Review**" in item.value for item in app.success)
 
 
 def test_dashboard_populated_environment_overview(populated_outputs_dir: Path):
@@ -264,6 +285,26 @@ def test_dashboard_populated_environment_model_performance(populated_outputs_dir
     assert "Chronological 2014 evaluation" in rendered
     assert "Probability Calibration (Isotonic Regression)" in rendered
     assert "enabling students with extreme disengagement to reach" not in rendered
+
+
+def test_dashboard_embeds_available_curve_assets(populated_outputs_dir: Path, monkeypatch):
+    """Verify model curve assets are rendered from their bytes without media URLs."""
+    figures_dir = populated_outputs_dir / "figures"
+    for filename in ("pr_curves.png", "roc_curves.png"):
+        Image.new("RGB", (2, 2), color="white").save(figures_dir / filename)
+    rendered_html = []
+    monkeypatch.setattr(chart_rendering.st, "html", rendered_html.append)
+
+    app = AppTest.from_file(str(APP_PATH))
+    app.run(timeout=30)
+    app.sidebar.radio[0].set_value("Model Performance").run(timeout=30)
+
+    assert not app.exception
+    assert len(rendered_html) >= 2
+    assert all('src="data:image/png;base64,' in markup for markup in rendered_html)
+    assert all("/media/" not in markup for markup in rendered_html)
+    assert any('alt="Precision-recall curves' in markup for markup in rendered_html)
+    assert any('alt="ROC curves' in markup for markup in rendered_html)
 
 
 def test_dashboard_engagement_avoids_unvalidated_registration_cutoff(populated_outputs_dir: Path):

@@ -14,9 +14,9 @@ The cutoffs and response targets below are provisional settings used to illustra
 
 | Priority Tier | Proposed Demonstration Rule | Proposed Response Target | Demonstration Cases | Caseload % | Example Support Action |
 |---|---|---|---|---|---|
-| **Tier 1 (Urgent)** | Proposed score $\ge 0.70$ | Proposed 3 business days | 2 | 0.1% | Example: personal outreach for human review |
-| **Tier 2 (Watch)** | Proposed score $0.40 \le p < 0.70$ | Proposed 7 business days | 167 | 8.3% | Example: supportive check-in for human review |
-| **Tier 3 (Standard)** | Proposed score $< 0.40$ | No target set | 1,831 | 91.5% | Example: routine course communications |
+| **Tier 1 (Urgent)** | Proposed score $\ge 0.70$ | Proposed 3 business days | 9 | 0.4% | Example: personal outreach for human review |
+| **Tier 2 (Watch)** | Proposed score $0.40 \le p < 0.70$ | Proposed 7 business days | 177 | 8.8% | Example: supportive check-in for human review |
+| **Tier 3 (Standard)** | Proposed score $< 0.40$ | No target set | 1,814 | 90.7% | Example: routine course communications |
 
 ---
 
@@ -26,9 +26,9 @@ The cutoffs and response targets below are provisional settings used to illustra
 |---|---|---|---|---|---|
 | 2013B | 500 | 500 | 0 | 0 | `unresolved_pending_institutional_policy` |
 | 2013J | 500 | 500 | 0 | 0 | `unresolved_pending_institutional_policy` |
-| 2014B | 500 | 485 | 15 | 15 | `unresolved_pending_institutional_policy` |
+| 2014B | 500 | 483 | 17 | 17 | `unresolved_pending_institutional_policy` |
 | 2014J | 500 | 477 | 23 | 23 | `unresolved_pending_institutional_policy` |
-| **ALL_TERMS_TOTAL** | 2,000 | 1,827 | 173 | 167 | `unresolved_pending_institutional_policy` |
+| **ALL_TERMS_TOTAL** | 2,000 | 1,827 | 173 | 166 | `unresolved_pending_institutional_policy` |
 
 > **Important Operational Governance Notice:**
 > Institutional business requirements specify academic advising capacity at approximately 500 cases per academic term across modules.
@@ -41,9 +41,9 @@ The cutoffs and response targets below are provisional settings used to illustra
 ## 3. Probability Calibration & Reliability
 
 Model risk probabilities use **isotonic** as selected on the training partition via 5-fold `GroupKFold` cross-validation:
-* **Held-Out Test Brier Score:** 0.13135
-* **Expected Calibration Error (ECE):** 0.00734 on the held-out evaluation data; compare with the raw-model row before interpreting calibration change.
-* **Calibrated Probability Range:** [0.0000, 0.7924] (mean: 0.1731)
+* **Held-Out Test Brier Score:** 0.13107
+* **Expected Calibration Error (ECE):** 0.00649 on the held-out evaluation data; compare with the raw-model row before interpreting calibration change.
+* **Calibrated Probability Range:** [0.0016, 0.9425] (mean: 0.1732)
 * **Calibration Artifact:** [`models/baseline/random_forest_calibrated.joblib`](../../models/baseline/random_forest_calibrated.joblib)
 
 ---

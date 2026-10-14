@@ -31,24 +31,27 @@ def run_stage_audit_sources() -> bool:
     from student_retention.paths import QUALITY_REPORTS_DIR
 
     logger.info("Executing Stage: audit_sources...")
-    manifest = generate_source_manifest()
-    manifest.save(QUALITY_REPORTS_DIR / "source_inventory.json")
+    generate_source_manifest(output_path=QUALITY_REPORTS_DIR / "source_inventory.json")
     return True
 
 
 def run_stage_clean_and_validate() -> bool:
     """Run Stage 2: Clean and validate."""
-    from student_retention.cleaning.cleaning_pipeline import (
-        clean_and_normalize_all_tables,
-    )
-    from student_retention.validation.report_generator import (
-        generate_data_quality_report,
-    )
+    from student_retention.cleaning.cleaning_pipeline import run_cleaning_pipeline
+    from student_retention.validation.report_generator import generate_quality_report
 
     logger.info("Executing Stage: clean_and_validate...")
-    clean_and_normalize_all_tables()
-    generate_data_quality_report()
-    return True
+    results = run_cleaning_pipeline()
+    missing_reports = {name: report["missing_report"] for name, report in results["reports"].items()}
+    identifier_reports = {
+        name: report["identifier_report"] for name, report in results["reports"].items()
+    }
+    report = generate_quality_report(
+        tables=results["tables"],
+        missing_reports=missing_reports,
+        identifier_reports=identifier_reports,
+    )
+    return report["status"] == "PASSED"
 
 
 def run_stage_build_cohort() -> bool:
@@ -66,36 +69,69 @@ def run_stage_run_eda() -> bool:
     from student_retention.eda.eda_runner import EDARunner
 
     logger.info("Executing Stage: run_eda...")
-    runner = EDARunner(policy="policy_c", cutoff_day=35)
+    runner = EDARunner(cutoff_day=35)
     runner.run()
     return True
 
 
 def run_stage_build_features() -> bool:
     """Run Stage 5: Build features."""
-    from student_retention.transformation.build_feature_table import FeaturePipeline
+    from student_retention.transformation.build_feature_table import FeatureTableBuilder
 
     logger.info("Executing Stage: build_features...")
-    pipeline = FeaturePipeline(policy="policy_c", cutoff_day=35)
-    pipeline.run()
+    pipeline = FeatureTableBuilder(cutoff_day=35)
+    pipeline.run_pipeline(policy_version="Policy C")
     return True
 
 
 def run_stage_train_models() -> bool:
     """Run Stage 6: Train models."""
-    from student_retention.modeling.train import run_training_pipeline
+    import pandas as pd
+
+    from student_retention.modeling.train import train_and_evaluate_all_models
+    from student_retention.paths import PROCESSED_FEATURES_DIR
 
     logger.info("Executing Stage: train_models...")
-    run_training_pipeline()
+    feature_path = PROCESSED_FEATURES_DIR / "feature_matrix_policy_c.parquet"
+    if not feature_path.exists():
+        raise FileNotFoundError(f"Feature matrix not found at {feature_path}")
+    feature_df = pd.read_parquet(feature_path)
+    train_and_evaluate_all_models(feature_df=feature_df, save_artifacts=True, random_state=42)
     return True
 
 
 def run_stage_evaluate_models() -> bool:
     """Run Stage 6b: Evaluate models."""
-    from student_retention.modeling.evaluate import run_evaluation_suite
+    import pandas as pd
+
+    from student_retention.features.feature_selection import select_primary_features
+    from student_retention.modeling.evaluate import generate_evaluation_figures
+    from student_retention.modeling.predict import load_model
+    from student_retention.modeling.splits import split_by_student_group
+    from student_retention.paths import (
+        FIGURES_DIR,
+        MODELS_BASELINE_DIR,
+        PROCESSED_FEATURES_DIR,
+        ensure_directories,
+    )
 
     logger.info("Executing Stage: evaluate_models...")
-    run_evaluation_suite()
+    ensure_directories()
+    feature_path = PROCESSED_FEATURES_DIR / "feature_matrix_policy_c.parquet"
+    if not feature_path.exists():
+        raise FileNotFoundError(f"Feature matrix not found at {feature_path}")
+    clean_df = select_primary_features(
+        pd.read_parquet(feature_path), include_target=True, include_identifiers=True
+    )
+    _, test_df = split_by_student_group(clean_df, test_size=0.20, random_state=42)
+    models = {
+        name: load_model(MODELS_BASELINE_DIR / f"{name}.joblib")
+        for name in ("dummy_baseline", "logistic_regression", "random_forest")
+        if (MODELS_BASELINE_DIR / f"{name}.joblib").exists()
+    }
+    if not models:
+        raise FileNotFoundError(f"No trained model artifacts found in {MODELS_BASELINE_DIR}")
+    generate_evaluation_figures(test_df, models, FIGURES_DIR)
     return True
 
 
